@@ -66,6 +66,33 @@ const router = createRouter({
         requiresAuth: false
       },
     },
+    {
+      path: '/datastructures',
+      name: 'datastructures',
+      component: () => import('@/pages/datastructures/index.vue'),
+      meta: {
+        title: "Data Structures",
+        requiresAuth: false
+      },
+    },
+    {
+      path: '/algorithms',
+      name: 'algorithms',
+      component: () => import('@/pages/algorithms/index.vue'),
+      meta: {
+        title: "Algorithms",
+        requiresAuth: false
+      },
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('@/pages/login/index.vue'),
+      meta: {
+        title: "Login",
+        requiresAuth: false
+      },
+    },
   ],
 })
 

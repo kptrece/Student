@@ -14,8 +14,8 @@
   import SectionFooter from "@/components/SectionFooter.vue";
 
   export default defineComponent({
-    name: "ReadingsPage",
-    components: { SectionFooter, SectionHeader },
+    name: "CoursesPage",
+    components: { SectionFooter, SectionHeader }
   });
 
 </script>
