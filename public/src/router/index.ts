@@ -22,11 +22,20 @@ const router = createRouter({
       },
     },
     {
-      path: '/asessment',
-      name: 'asessment',
-      component: () => import('@/pages/asessment/index.vue'),
+      path: '/excercises',
+      name: 'excercises',
+      component: () => import('@/pages/excercises/index.vue'),
       meta: {
-        title: "Asessment",
+        title: "Excercises",
+        requiresAuth: false
+      },
+    },
+    {
+      path: '/quizzes',
+      name: 'quizzes',
+      component: () => import('@/pages/quizzes/index.vue'),
+      meta: {
+        title: "Quizzes",
         requiresAuth: false
       },
     },
@@ -36,6 +45,24 @@ const router = createRouter({
       component: () => import('@/pages/visualization/index.vue'),
       meta: {
         title: "Visualization",
+        requiresAuth: false
+      },
+    },
+    {
+      path: '/readings',
+      name: 'readings',
+      component: () => import('@/pages/readings/index.vue'),
+      meta: {
+        title: "Reading Materials",
+        requiresAuth: false
+      },
+    },
+    {
+      path: '/videos',
+      name: 'videos',
+      component: () => import('@/pages/videos/index.vue'),
+      meta: {
+        title: "Video Tutorials",
         requiresAuth: false
       },
     },

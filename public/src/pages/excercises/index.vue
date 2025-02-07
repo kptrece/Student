@@ -14,7 +14,7 @@
   import SectionFooter from "@/components/SectionFooter.vue";
 
   export default defineComponent({
-    name: "LoginPage",
+    name: "ExcercisesPage",
     components: { SectionFooter, SectionHeader }
   });
 

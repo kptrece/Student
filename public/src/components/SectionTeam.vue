@@ -1,9 +1,9 @@
 <template>
   <section class="team section">
     <div class="container section-title" data-aos="fade-up">
-      <div><span class="text-white">Check Our</span> <span class="description-title text-white">Team</span></div>
+      <div><span>Check Our</span> <span class="description-title">Team</span></div>
     </div>
-    <div class="container">
+    <div class="container py-5">
       <div class="row gy-5">
         <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
           <div class="member">
