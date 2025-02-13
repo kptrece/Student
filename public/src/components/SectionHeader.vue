@@ -25,10 +25,43 @@
               <li><router-link to="/algorithms">Algorithms</router-link></li>
             </ul>
           </li>
-          <li><router-link :class="{ active: $route.name == 'login' ? true : false }" to="/login">Login</router-link></li>
+          <li v-if="!isAuthenticated()"><router-link :class="{ active: $route.name == 'login' ? true : false }" to="/login">Login</router-link></li>
+          <li v-else><button class="btn btn-primary rounded-5" @click="logout()">Logout</button></li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
     </div>
   </header>
 </template>
+<script lang="ts">
+
+  import { defineComponent } from 'vue';
+  import { isAuthenticated } from '@/uikit-api';
+  import Swal from 'sweetalert2';
+
+  export default defineComponent({
+    name: "SectionHeader",
+    setup() {
+      return {
+        isAuthenticated
+      }
+    },
+    methods: {
+      logout() {
+        Swal.fire({
+          title: "Confirmation",
+          text: "Confirm your sign out action",
+          showCancelButton: true,
+          confirmButtonText: "Logout",
+          icon: "question"
+        }).then( async (result) => {
+          if(result.isConfirmed) {
+            localStorage.clear();
+            this.$router.replace('/');
+          }
+        });
+      }
+    }
+  });
+
+</script>
