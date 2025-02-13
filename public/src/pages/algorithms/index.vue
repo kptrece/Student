@@ -2,7 +2,7 @@
   <div>
     <SectionHeader/>
     <main class="main">
-      <div class="p-5 m-5"></div>
+      <div class="p-5 m-5 bg-dark mt-5" style="margin-top: 200px;"></div>
     </main>
     <SectionFooter/>
   </div>
