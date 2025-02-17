@@ -10,9 +10,7 @@
             <Courses title="Data Structure" :list="da" @view="onView" />
             <Courses title="Algorithm" :list="ag" @view="onView"/>
           </div>
-          <div class="col-9">
-
-          </div>
+          <div class="col-9" v-html="article?.content"></div>
         </div>
       </div>
     </main>
@@ -33,7 +31,8 @@
     data() {
       return {
         da: {} as any,
-        ag: {} as any
+        ag: {} as any,
+        article: '' as any
       }
     },
     methods: {
@@ -46,8 +45,13 @@
         });
       },
       async onView(event: any) {
-        await fetchSingleArticleByTopic(event?.topic_refid).the( async (article) => {
-          console.log(toRaw(article));
+        await fetchSingleArticleByTopic(event?.topic_refid).then( async (article) => {
+          if(article.length > 0) {
+            this.article = article[0];
+          }
+          else {
+            this.$toast.warning("No article found");
+          }
         });
       }
     },
