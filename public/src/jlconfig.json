@@ -12,5 +12,7 @@
             "lng": 123.98276523339344
         }
     },
-    "currency":"PHP"
+    "currency":"PHP",
+    "excercises_limit": 3,
+    "quiz_limit": 10
 }

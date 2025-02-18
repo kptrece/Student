@@ -1,9 +1,22 @@
 <template>
   <div>
-    <h3>{{ title }}</h3>
-    <ol>
-      <li v-for="(item, i) in list" :key="i" @click="()=>{ this.$emit('view', item) }" >{{ item?.name }}</li>
-    </ol>
+    <table class="table table-striped" style="width: 100%;">
+      <thead class="bg-dark">
+        <tr>
+          <th colspan="2">{{ title }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(item, i) in list" :key="i">
+          <td><small>{{ item?.name }}</small></td>
+          <td style="width: 80px;">
+            <button class="btn btn-primary btn-sm" @click="()=>{ $emit('view', item) }">
+              <span>Read</span>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 <script lang="ts">

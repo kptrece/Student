@@ -1,14 +1,21 @@
 <template>
   <div>
-    <h1>Page</h1>
+    <SectionHeader/>
+    <main class="main">
+      
+    </main>
+    <SectionFooter/>
   </div>
 </template>
 <script lang="ts">
 
   import { defineComponent } from 'vue';
+  import SectionHeader from "@/components/SectionHeader.vue";
+  import SectionFooter from "@/components/SectionFooter.vue";
 
   export default defineComponent({
-    name: "VisualizationsPage",
+    name: "VisualizationPage",
+    components: { SectionFooter, SectionHeader }
   });
 
 </script>
