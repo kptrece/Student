@@ -138,6 +138,7 @@
                 this.selected = null;
                 if(this.isAllCompleted()) {
                   this.$toast.success("All completed!");
+                  this.saveQuiz();
                 }
               });
             }

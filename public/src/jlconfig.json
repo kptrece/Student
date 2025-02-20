@@ -14,5 +14,5 @@
     },
     "currency":"PHP",
     "excercises_limit": 5,
-    "quiz_limit": 15
+    "quiz_limit": 3
 }

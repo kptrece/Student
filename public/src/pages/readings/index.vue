@@ -18,7 +18,21 @@
           <div class="col-8">
             <h1 class="text-center">{{ article?.title }}</h1>
             <h3 class="text-center my-4">{{ article?.description }}</h3>
-            <div class="text-dark" v-html="article?.content"></div>
+            <div class="text-dark">
+              <div v-if="article?.content" v-html="article?.content"></div>
+              <div v-else class="p-5 m-5">
+                <div class="card">
+                  <div class="card-body">
+                    <h3 class="text-center p-5" style="color: #a9a0a0;">Select reading material to start</h3>
+                    <div class="d-flex justify-content-center pb-5">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="#a9a0a0" class="bi bi-bookmark-plus-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5m6.5-11a.5.5 0 0 0-1 0V6H6a.5.5 0 0 0 0 1h1.5v1.5a.5.5 0 0 0 1 0V7H10a.5.5 0 0 0 0-1H8.5z"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
