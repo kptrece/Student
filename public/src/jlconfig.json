@@ -13,6 +13,6 @@
         }
     },
     "currency":"PHP",
-    "excercises_limit": 3,
-    "quiz_limit": 10
+    "excercises_limit": 5,
+    "quiz_limit": 15
 }
