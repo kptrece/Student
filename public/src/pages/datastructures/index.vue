@@ -53,7 +53,7 @@
               <div class="card-body">
                 <h5>Queues Visualization</h5>
                 <p><small>Simulate FIFO structure with enqueue and dequeue operations.</small></p>
-                <button class="btn btn-primary w-100" @click="()=>{ $router.push('/datastructures-stacks'); }">View</button>
+                <button class="btn btn-primary w-100" @click="()=>{ $router.push('/datastructures-queues'); }">View</button>
               </div>
             </div>
           </div>

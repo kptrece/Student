@@ -3,12 +3,7 @@
     <SectionHeader/>
     <main class="main">
       <div class="container mt-5 py-5">
-        <div class="row mt-5">
-          <div clas="col-12">
-            <h1 class="text-center pb-5">Linked List Visualization</h1>
-          </div>
-        </div>
-        <iframe class="w-100 border-0" style="height: 600px;"  src="https://algo-spear-visualization.web.app/linkedlist.html"></iframe>
+        <iframe class="w-100 border-0" style="height: 1300px;"  src="https://algo-spear-visualization.web.app/searching.html"></iframe>
       </div>
     </main>
     <SectionFooter/>
@@ -21,7 +16,7 @@
   import SectionFooter from "@/components/SectionFooter.vue";
 
   export default defineComponent({
-    name: "VisualizationLinkedListPage",
+    name: "VisualizationArrayPage",
     components: { SectionFooter, SectionHeader }
   });
 

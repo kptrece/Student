@@ -138,6 +138,25 @@ const router = createRouter({
         requiresAuth: false
       },
     },
+
+    {
+      path: '/algorithms-searching',
+      name: 'algorithms_searching',
+      component: () => import('@/pages/algorithms-searching/index.vue'),
+      meta: {
+        title: "Algorithms Searching",
+        requiresAuth: false
+      },
+    },
+    {
+      path: '/algorithms-sorting',
+      name: 'algorithms_sorting',
+      component: () => import('@/pages/algorithms-sorting/index.vue'),
+      meta: {
+        title: "Algorithms Sorting",
+        requiresAuth: false
+      },
+    },
   ],
 })
 

@@ -6,7 +6,6 @@
     },
     "api": {
         "server":"https://api-services.jlipreso.com/ver-1/public/api/",
-        "google_map":"AIzaSyCxoaHJD3r-EdmMd6VEt9eF9zxlxZwgtt4",
         "google_map_center": {
             "lat": 10.643250828122639,
             "lng": 123.98276523339344

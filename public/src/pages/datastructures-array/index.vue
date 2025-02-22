@@ -3,14 +3,12 @@
     <SectionHeader/>
     <main class="main">
       <div class="container mt-5 py-5">
-        <div class="row m-5 p-5">
+        <div class="row mt-5">
           <div clas="col-12">
-            <h1 class="text-center pb-5">Interactive Array Visualization</h1>
-          </div>
-          <div class="col-12 mb-5">
-            <div class="bg-dark p-5 m-0"></div>
+            <h1 class="text-center">Interactive Array Visualization</h1>
           </div>
         </div>
+        <iframe class="w-100 border-0" style="height: 600px;"  src="https://algo-spear-visualization.web.app/arrays.html"></iframe>
       </div>
     </main>
     <SectionFooter/>

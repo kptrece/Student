@@ -3,13 +3,11 @@
     <SectionHeader/>
     <main class="main">
       <div class="container mt-5 py-5">
-        <div class="row m-5 p-5">
+        <div class="row mt-5">
           <div clas="col-12">
             <h1 class="text-center pb-5">Stacks Visualization</h1>
           </div>
-          <div class="col-12 mb-5">
-            <div class="bg-dark p-5 m-0"></div>
-          </div>
+          <iframe class="w-100 border-0" style="height: 600px;"  src="https://algo-spear-visualization.web.app/stacks.html"></iframe>
         </div>
       </div>
     </main>

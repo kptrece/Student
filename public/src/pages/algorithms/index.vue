@@ -13,7 +13,7 @@
               <div class="card-body">
                 <h5>Sorting Visualization</h5>
                 <p><small>Demonstrate reordering of elements in ascending or descending order.</small></p>
-                <button class="btn btn-primary w-100">View</button>
+                <button class="btn btn-primary w-100" @click="()=>{ $router.push('/algorithms-sorting'); }">View</button>
               </div>
             </div>
           </div>
@@ -23,7 +23,7 @@
               <div class="card-body">
                 <h5>Searching Visualization</h5>
                 <p><small>Illustrate locating an element within a dataset using various algorithms.</small></p>
-                <button class="btn btn-primary w-100">View</button>
+                <button class="btn btn-primary w-100" @click="()=>{ $router.push('/algorithms-searching'); }">View</button>
               </div>
             </div>
           </div>
