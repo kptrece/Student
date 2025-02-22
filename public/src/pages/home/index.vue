@@ -4,6 +4,7 @@
     <main class="main">
       <SectionSlider/>
       <SectionFeatures/>
+      <SectionAbout/>
       <SectionTeam/>
     </main>
     <SectionFooter/>
@@ -17,10 +18,11 @@
   import SectionFeatures from "@/components/SectionFeatures.vue";
   import SectionTeam from "@/components/SectionTeam.vue";
   import SectionFooter from "@/components/SectionFooter.vue";
+  import SectionAbout from "@/components/SectionAbout.vue";
 
   export default defineComponent({
     name: "AsessmentPage",
-    components: { SectionFooter, SectionHeader, SectionSlider, SectionFeatures, SectionTeam }
+    components: { SectionAbout, SectionFooter, SectionHeader, SectionSlider, SectionFeatures, SectionTeam }
   });
 
 </script>
