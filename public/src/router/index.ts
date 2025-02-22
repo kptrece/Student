@@ -93,6 +93,51 @@ const router = createRouter({
         requiresAuth: false
       },
     },
+    {
+      path: '/datastructures-array',
+      name: 'datastructures_array',
+      component: () => import('@/pages/datastructures-array/index.vue'),
+      meta: {
+        title: "Datastructures Array",
+        requiresAuth: false
+      },
+    },
+    {
+      path: '/datastructures-graphs',
+      name: 'datastructures_graphs',
+      component: () => import('@/pages/datastructures-graphs/index.vue'),
+      meta: {
+        title: "Datastructures Graphs",
+        requiresAuth: false
+      },
+    },
+    {
+      path: '/datastructures-linked-list',
+      name: 'datastructures_linked_list',
+      component: () => import('@/pages/datastructures-linked-list/index.vue'),
+      meta: {
+        title: "Datastructures Linked List",
+        requiresAuth: false
+      },
+    },
+    {
+      path: '/datastructures-queues',
+      name: 'datastructures_queues',
+      component: () => import('@/pages/datastructures-queues/index.vue'),
+      meta: {
+        title: "Datastructures Queues",
+        requiresAuth: false
+      },
+    },
+    {
+      path: '/datastructures-stacks',
+      name: 'datastructures_stacks',
+      component: () => import('@/pages/datastructures-stacks/index.vue'),
+      meta: {
+        title: "Datastructures Stacks",
+        requiresAuth: false
+      },
+    },
   ],
 })
 

@@ -13,7 +13,7 @@
               <div class="card-body">
                 <h5>Arrays Visualization</h5>
                 <p><small>Show indexed collection of elements in a sequential layout.</small></p>
-                <button class="btn btn-primary w-100">View</button>
+                <button class="btn btn-primary w-100" @click="()=>{ $router.push('/datastructures-array'); }" >View</button>
               </div>
             </div>
           </div>
@@ -23,7 +23,7 @@
               <div class="card-body">
                 <h5>Linked List Visualization</h5>
                 <p><small>Display nodes linked sequentially with pointers or references.</small></p>
-                <button class="btn btn-primary w-100">View</button>
+                <button class="btn btn-primary w-100" @click="()=>{ $router.push('/datastructures-linked-list'); }">View</button>
               </div>
             </div>
           </div>
@@ -33,7 +33,7 @@
               <div class="card-body">
                 <h5>Graphs Visualization</h5>
                 <p><small>Visualize nodes and edges with directed or undirected connections</small></p>
-                <button class="btn btn-primary w-100">View</button>
+                <button class="btn btn-primary w-100" @click="()=>{ $router.push('/datastructures-graphs'); }">View</button>
               </div>
             </div>
           </div>
@@ -43,7 +43,7 @@
               <div class="card-body">
                 <h5>Stacks Visualization</h5>
                 <p><small>Represent LIFO structure with push, pop, and peek actions.</small></p>
-                <button class="btn btn-primary w-100">View</button>
+                <button class="btn btn-primary w-100" @click="()=>{ $router.push('/datastructures-stacks'); }">View</button>
               </div>
             </div>
           </div>
@@ -53,7 +53,7 @@
               <div class="card-body">
                 <h5>Queues Visualization</h5>
                 <p><small>Simulate FIFO structure with enqueue and dequeue operations.</small></p>
-                <button class="btn btn-primary w-100">View</button>
+                <button class="btn btn-primary w-100" @click="()=>{ $router.push('/datastructures-stacks'); }">View</button>
               </div>
             </div>
           </div>
