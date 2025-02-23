@@ -7,7 +7,8 @@
 
   import { defineComponent } from 'vue';
   import { RouterView } from 'vue-router';
-  import { useHead } from '@unhead/vue'
+  import { useHead } from '@unhead/vue';
+  import Aos from 'aos';
   
   export default defineComponent({
     name: 'MainApp',
@@ -19,7 +20,12 @@
           title: route.meta?.title + ''
         })
       }
-    }
+    },
+    async mounted() {
+      setTimeout(() => {
+        Aos.init();
+      },1500);
+    },
   });
 
 

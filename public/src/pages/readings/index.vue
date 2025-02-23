@@ -3,33 +3,42 @@
     <SectionHeader/>
     <main class="main">
       <div class="container mt-5 py-5">
-        <h1 class="mt-5">Learning Materials</h1>
-        <div class="row mt-5">
-          <div class="col-4">
-            <Courses title="Fundamental of Programming" :list="fun_of_prog" @view="onView" />
-            <h4 class="fw-bold">Data Structures</h4>
-            <Courses title="Arrays" :list="arrays" @view="onViewDataStructure" />
-            <Courses title="Linked List" :list="linked_list" @view="onViewLinkList"/>
-            <Courses title="Stacks" :list="stacks" @view="onViewStacks"/>
-            <h4 class="fw-bold">Algorithms</h4>
-            <Courses title="Queues" :list="queues" @view="onViewQueues"/>
-            <Courses title="Graphs" :list="graphs" @view="onViewGraphs"/>
-          </div>
-          <div class="col-8">
-            <h1 class="text-center">{{ article?.title }}</h1>
-            <h3 class="text-center my-4">{{ article?.description }}</h3>
-            <div class="text-dark">
-              <div v-if="article?.content" v-html="article?.content"></div>
-              <div v-else class="p-5 m-5">
-                <div class="card">
-                  <div class="card-body">
-                    <h3 class="text-center p-5" style="color: #a9a0a0;">Select reading material to start</h3>
-                    <div class="d-flex justify-content-center pb-5">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="#a9a0a0" class="bi bi-bookmark-plus-fill" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5m6.5-11a.5.5 0 0 0-1 0V6H6a.5.5 0 0 0 0 1h1.5v1.5a.5.5 0 0 0 1 0V7H10a.5.5 0 0 0 0-1H8.5z"/>
-                      </svg>
-                    </div>
-                  </div>
+        <h1 class="mt-5 text-center">Learning Materials</h1>
+        <div class="p-5">
+          <div class="row mt-5">
+            <div class="col-4">
+              <div class="card">
+                <img src="/src/assets/img/as-fundamental-of-programming.jpg" />
+                <div class="card-body">
+                  <h5>Fundamental of Programming</h5>
+                  <p>Refer to the core principles and building blocks that underpin all software development. These include concepts like variables, data types, control structures, functions, and algorithms.</p>
+                </div>
+                <div class="card-footer">
+                  <button class="btn btn-primary w-100" @click="readFundamentalOfProgramming()">Read</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="card">
+                <img src="/src/assets/img/as-data-structure.png" />
+                <div class="card-body">
+                  <h5>Data Structure</h5>
+                  <p>Data structures are a specific way of organizing data in a specialized format on a computer so that the information can be organized, processed, stored, and retrieved quickly and effectively.</p>
+                </div>
+                <div class="card-footer">
+                  <button class="btn btn-primary w-100" @click="readDataStructure()">Read</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="card">
+                <img src="/src/assets/img/as-algorithms.png" />
+                <div class="card-body">
+                  <h5>Algorithms</h5>
+                  <p>A programming algorithm is a procedure or formula used for solving a problem. It is based on conducting a sequence of specified actions in which these actions describe how to do something.</p>
+                </div>
+                <div class="card-footer">
+                  <button class="btn btn-primary w-100" @click="readAlgorithms()" >Read</button>
                 </div>
               </div>
             </div>
@@ -54,118 +63,18 @@
     components: { Courses, SectionFooter, SectionHeader },
     data() {
       return {
-        user: {} as any,
-        fun_of_prog: {} as any,
-        arrays: {} as any,
-        linked_list: {} as any,
-        stacks: {} as any,
-        queues: {} as any,
-        graphs: {} as any,
-        article: '' as any
+        user: {} as any
       }
     },
     methods: {
-      async fetchArticles() {
-        await fetchAllArticlesFunOfProg().then( async (fun_of_prog) => {
-          this.fun_of_prog = fun_of_prog;
-          await fetchAllArticlesArrays().then( async (arrays) => {
-            this.arrays = arrays;
-            await fetchAllArticlesLinkedList().then( async (linked_list) => {
-              this.linked_list = linked_list;
-              await fetchAllArticlesStacks().then( async (stacks) => {
-                this.stacks = stacks;
-                await fetchAllArticlesQueues().then( async (queues) => {
-                  this.queues = queues;
-                  await fetchAllArticlesGraphs().then( async (graphs) => {
-                    this.graphs = graphs;
-                  });
-                });
-              });
-            });
-          });
-        });
+      async readFundamentalOfProgramming() {
+        this.$router.push("/readings-fundamental-of-programming");
       },
-      async onViewDataStructure(event: any) {
-        await isFundamentalDone(this.user?.user_refid).then( async (response) => {
-          if(response?.success) {
-            await this.onView(event);
-          }
-          else {
-            Swal.fire({
-              title: "Required",
-              html: response?.message,
-              icon:"warning"
-            });
-          }
-        });
+      async readDataStructure() {
+        this.$router.push("/readings-data-structure");
       },
-      async onViewLinkList(event: any) {
-        await isArticleGroupDone(this.user?.user_refid, 'ARRAYS').then( async (response) => {
-          if(response?.success) {
-            await this.onView(event);
-          }
-          else {
-            Swal.fire({
-              title: "Required",
-              html: response?.message,
-              icon:"warning"
-            });
-          }
-        });
-      },
-      async onViewStacks(event: any) {
-        await isArticleGroupDone(this.user?.user_refid, 'LINKED_LIST').then( async (response) => {
-          if(response?.success) {
-            await this.onView(event);
-          }
-          else {
-            Swal.fire({
-              title: "Required",
-              html: response?.message,
-              icon:"warning"
-            });
-          }
-        });
-      },
-      async onViewQueues(event: any) {
-        await isArticleGroupDone(this.user?.user_refid, 'STACKS').then( async (response) => {
-          if(response?.success) {
-            await this.onView(event);
-          }
-          else {
-            Swal.fire({
-              title: "Required",
-              html: response?.message,
-              icon:"warning"
-            });
-          }
-        });
-      },
-      async onViewGraphs(event: any) {
-        await isArticleGroupDone(this.user?.user_refid, 'QUEUES').then( async (response) => {
-          if(response?.success) {
-            await this.onView(event);
-          }
-          else {
-            Swal.fire({
-              title: "Required",
-              html: response?.message,
-              icon:"warning"
-            });
-          }
-        });
-      },
-      async onView(event: any) {
-        await fetchSingleArticleByTopic(event?.topic_refid).then( async (article) => {
-          if(article.length > 0) {
-            scrollToTop();
-            this.article = article[0];
-            await createReadLogs({ article_refid: article[0]?.article_refid, topic_refid: article[0]?.topic_refid, user_refid: this.user?.user_refid});
-          }
-          else {
-            this.$toast.warning("No article found");
-          }
-        });
+      async readAlgorithms() {
+        this.$router.push("/readings-algorithms");
       }
     },
     async mounted() {
@@ -173,13 +82,6 @@
       if(user?.user_refid) {
         this.user = user;
       }
-      else {
-        this.$toast.warning("Login to log reading history.")
-      }
-     
-      await this.fetchArticles().then( async () => {
-        printDevLog("Readings:", toRaw(this.$data));
-      });
     }
   });
 

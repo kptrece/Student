@@ -3,7 +3,7 @@
     <SectionHeader/>
     <main class="main">
       <div class="container mt-5 py-5">
-        <h1 class="text-center mt-5">Fundamental of Programming</h1>
+        <h1 class="text-center mt-5">Algorithms</h1>
         <div class="row mt-5">
           <div class="col-4">
             <CourseList title="Fundamental of Programming" :list="list" @view="onView" />

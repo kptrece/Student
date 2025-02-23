@@ -49,8 +49,7 @@
   import { defineComponent } from 'vue';
 
   export default defineComponent({
-    name: "SectionFeatures",
-
+    name: "SectionFeatures"
   });
 
 </script>

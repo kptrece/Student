@@ -4,7 +4,7 @@
     <main class="main">
       <SectionSlider/>
       <SectionFeatures/>
-      <SectionAbout/>
+      <SectionAbout/> 
       <SectionTeam/>
     </main>
     <SectionFooter/>
