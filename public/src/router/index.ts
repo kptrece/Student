@@ -58,6 +58,36 @@ const router = createRouter({
       },
     },
     {
+      path: '/readings-algorithms',
+      name: 'readings_algorithms',
+      component: () => import('@/pages/readings-algorithms/index.vue'),
+      meta: {
+        title: "Reading Algorithms",
+        requiresAuth: false
+      },
+    },
+    {
+      path: '/readings-data-structure',
+      name: 'readings-data-structure',
+      component: () => import('@/pages/readings-data-structure/index.vue'),
+      meta: {
+        title: "Data Structure",
+        requiresAuth: false
+      },
+    },
+    {
+      path: '/readings-fundamental-of-programming',
+      name: 'readings_fundamental_of_programming',
+      component: () => import('@/pages/readings-fundamental-of-programming/index.vue'),
+      meta: {
+        title: "Fundamental of Programming",
+        requiresAuth: false
+      },
+    },
+
+
+
+    {
       path: '/videos',
       name: 'videos',
       component: () => import('@/pages/videos/index.vue'),
