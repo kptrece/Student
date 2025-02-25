@@ -26,7 +26,10 @@
                   <p>Data structures are a specific way of organizing data in a specialized format on a computer so that the information can be organized, processed, stored, and retrieved quickly and effectively.</p>
                 </div>
                 <div class="card-footer">
-                  <button class="btn btn-primary w-100" @click="readDataStructure()">Read</button>
+                  <button class="btn btn-primary w-100" @click="readDataStructure()">
+                    <i class="bi bi-lock-fill me-2"></i>
+                    <span>Read</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -38,7 +41,10 @@
                   <p>A programming algorithm is a procedure or formula used for solving a problem. It is based on conducting a sequence of specified actions in which these actions describe how to do something.</p>
                 </div>
                 <div class="card-footer">
-                  <button class="btn btn-primary w-100" @click="readAlgorithms()" >Read</button>
+                  <button class="btn btn-primary w-100" @click="readAlgorithms()">
+                    <i class="bi bi-lock-fill me-2"></i>
+                    <span>Read</span>
+                  </button>
                 </div>
               </div>
             </div>

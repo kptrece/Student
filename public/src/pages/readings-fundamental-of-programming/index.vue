@@ -6,6 +6,7 @@
         <h1 class="text-center mt-5">Fundamental of Programming</h1>
         <div class="row mt-5">
           <div class="col-4">
+            <ElemProgressbar :loading="loading" />
             <CourseList title="Fundamental of Programming" :list="list" @view="onView" />
           </div>
           <div class="col-8">            
@@ -36,14 +37,18 @@
 
   import { defineComponent, toRaw } from 'vue';
   import { lsGetUser, fetchAllArticlesFunOfProg, printDevLog, fetchSingleArticleByTopic, scrollToTop, createReadLogs } from "@/uikit-api";
+  import { Timer } from "@/uikit-api/utility/timer";
   import SectionHeader from "@/components/SectionHeader.vue";
   import SectionFooter from "@/components/SectionFooter.vue";
   import CourseList from "@/components/Courses.vue";
+  import ElemProgressbar from '@/components/ElemProgressbar.vue';
+import { time } from 'console';
 
   export default defineComponent({
-    components: { CourseList, SectionFooter, SectionHeader },
+    components: { ElemProgressbar, CourseList, SectionFooter, SectionHeader },
     data() {
       return {
+        loading: false,
         user: {} as any,
         list: [] as any,
         article: {} as any
@@ -51,7 +56,9 @@
     },
     methods: {
       async onView(event: any) {
+        this.loading = true;
         await fetchSingleArticleByTopic(event?.topic_refid).then( async (article) => {
+          this.loading = false;
           if(article.length > 0) {
             scrollToTop();
             this.article = article[0];
@@ -64,6 +71,7 @@
       }
     },
     async mounted() {
+      this.loading = true;
       const user = await lsGetUser() as any;
       if(user?.user_refid) {
         this.user = user;
@@ -72,7 +80,10 @@
         this.$toast.warning("Login to log reading history.")
       }
       await fetchAllArticlesFunOfProg().then( async (list) => {
-        this.list = toRaw(list);
+        this.list     = toRaw(list);
+        this.loading  = false;
+        const timer   = new Timer(3665);
+        timer.start();
         printDevLog("Data:", this.$data);
       });
     },

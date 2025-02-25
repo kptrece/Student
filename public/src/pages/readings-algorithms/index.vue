@@ -6,11 +6,17 @@
         <h1 class="text-center mt-5">Algorithms</h1>
         <div class="row mt-5">
           <div class="col-4">
-            <CourseList title="Fundamental of Programming" :list="list" @view="onView" />
+            <ElemProgressbar  :loading="loading" />
+            <CourseList title="Stacks" :list="list_stacks" @view="onView" />
+            <button class="btn btn-danger btn-sm py-0 py-0 mb-4" @click="resetStacksReadingTime()" ><small>Reset reading time</small></button>
+            <CourseList title="Queues" :list="list_queues" @view="onView" />
+            <button class="btn btn-danger btn-sm py-0 py-0 mb-4" @click="resetQueuesReadingTime()"><small>Reset reading time</small></button>
+            <CourseList title="Graphs" :list="list_graph" @view="onView" />
+            <button class="btn btn-danger btn-sm py-0 py-0" @click="resetGraphsReadingTime()"><small>Reset reading time</small></button>
           </div>
           <div class="col-8">            
-            <h3 class="text-center my-4">{{ article?.description }}</h3>
-            <div class="text-dark">
+            <SectionArticleHeader :article="article" :user="user" :duration="180" :reset="reset"/>
+            <div class="text-dark mt-5">
               <div v-if="article?.content" v-html="article?.content"></div>
               <div v-else class="p-5 m-5">
                 <div class="card">
@@ -34,28 +40,60 @@
 </template>
 <script lang="ts">
 
-  import { defineComponent, toRaw } from 'vue';
-  import { lsGetUser, fetchAllArticlesFunOfProg, printDevLog, fetchSingleArticleByTopic, scrollToTop, createReadLogs } from "@/uikit-api";
+  import { defineComponent, toRaw, ref } from 'vue';
+  import { fetchAllArticlesGraphs, fetchAllArticlesQueues, resetReadingTime, lsGetUser, fetchAllArticlesStacks, printDevLog, fetchSingleArticleByTopic, scrollToTop, createReadLogs, randomNumbers, queryDelete, SystemConnections } from "@/uikit-api";
   import SectionHeader from "@/components/SectionHeader.vue";
   import SectionFooter from "@/components/SectionFooter.vue";
   import CourseList from "@/components/Courses.vue";
+  import SectionArticleHeader from "@/components/SectionArticleHeader.vue";
+  import ElemProgressbar from '@/components/ElemProgressbar.vue';
+  import jlconfig from "@/jlconfig.json";
 
   export default defineComponent({
-    components: { CourseList, SectionFooter, SectionHeader },
+    components: { SectionArticleHeader, ElemProgressbar, CourseList, SectionFooter, SectionHeader },
     data() {
       return {
+        reset: 0,
+        timeDisplay: {} as any,
+        timeMax: 0,
+        loading: false,
         user: {} as any,
-        list: [] as any,
+        list_stacks: [] as any,
+        list_queues: [] as any,
+        list_graph:  [] as any,
         article: {} as any
       }
     },
     methods: {
+      async resetStacksReadingTime() {
+        await resetReadingTime({ user_refid: this.user?.user_refid, articles: jlconfig.article_array.STACKS }).then( async (response) => {
+          if(response?.success) {
+            window.location.reload();
+          }
+        });
+      },
+      async resetQueuesReadingTime() {
+        await resetReadingTime({ user_refid: this.user?.user_refid, articles: jlconfig.article_array.QUEUES }).then( async (response) => {
+          if(response?.success) {
+            window.location.reload();
+          }
+        });
+      },
+      async resetGraphsReadingTime() {
+        await resetReadingTime({ user_refid: this.user?.user_refid, articles: jlconfig.article_array.GRAPHS }).then( async (response) => {
+          if(response?.success) {
+            window.location.reload();
+          }
+        });
+      },
       async onView(event: any) {
+        this.loading = true;
         await fetchSingleArticleByTopic(event?.topic_refid).then( async (article) => {
+          this.loading = false;
           if(article.length > 0) {
             scrollToTop();
-            this.article = article[0];
-            await createReadLogs({ article_refid: article[0]?.article_refid, topic_refid: article[0]?.topic_refid, user_refid: this.user?.user_refid});
+            this.article  = article[0];
+            this.reset    = randomNumbers();
           }
           else {
             this.$toast.warning("No article found");
@@ -64,6 +102,7 @@
       }
     },
     async mounted() {
+      this.loading = true;
       const user = await lsGetUser() as any;
       if(user?.user_refid) {
         this.user = user;
@@ -71,11 +110,18 @@
       else {
         this.$toast.warning("Login to log reading history.")
       }
-      await fetchAllArticlesFunOfProg().then( async (list) => {
-        this.list = toRaw(list);
+      await fetchAllArticlesStacks().then( async (list_stacks) => {
+        this.list_stacks     = toRaw(list_stacks);
+        await fetchAllArticlesQueues().then( async (list_queues) => {
+          this.list_queues = list_queues;
+          await fetchAllArticlesGraphs().then( async (list_graph) => {
+            this.list_graph = list_graph;
+          });
+        });
+        this.loading  = false;
         printDevLog("Data:", this.$data);
       });
-    },
+    }
   });
 
 </script>
