@@ -7,11 +7,11 @@
         <div class="row mt-5">
           <div class="col-4">
             <ElemProgressbar :loading="loading" />
-            <CourseList title="Fundamental of Programming" :list="list" @view="onView" />
+            <CourseList title="Fundamental of Programming" :btn_disabled="false" :list="list" @view="onView" />
             <button class="btn btn-danger btn-sm py-0 py-0" @click="resetFundamentalReadingTime()"><small>Reset reading time</small></button>
           </div>
           <div class="col-8">            
-            <SectionArticleHeader :article="article" :user="user" :reset="reset"/>
+            <SectionArticleHeader :article="article" :user="user" :reset="reset" @completed="isArticleGroupDone()"/>
             <div class="text-dark mt-5">
               <div v-if="article?.content" v-html="article?.content"></div>
               <div v-else class="p-5 m-5">
@@ -37,7 +37,7 @@
 <script lang="ts">
 
   import { defineComponent, toRaw } from 'vue';
-  import { resetReadingTime, randomNumbers, lsGetUser, fetchAllArticlesFunOfProg, printDevLog, fetchSingleArticleByTopic, scrollToTop, createReadLogs } from "@/uikit-api";
+  import { resetReadingTimeByGroup, randomNumbers, lsGetUser, fetchAllArticlesFunOfProg, printDevLog, fetchSingleArticleByTopic, scrollToTop, createReadLogs } from "@/uikit-api";
   import SectionHeader from "@/components/SectionHeader.vue";
   import SectionFooter from "@/components/SectionFooter.vue";
   import CourseList from "@/components/Courses.vue";
@@ -50,6 +50,7 @@
     data() {
       return {
         reset: 0,
+        reset_unlock: 0,
         loading: false,
         user: {} as any,
         list: [] as any,
@@ -72,11 +73,14 @@
         });
       },
       async resetFundamentalReadingTime() {
-        await resetReadingTime({ user_refid: this.user?.user_refid, articles: jlconfig.article_array.FUN_OF_PROG }).then( async (response) => {
+        await resetReadingTimeByGroup({ user_refid: this.user?.user_refid, group_code:'FUN_OF_PROG'}).then( async (response) => {
           if(response?.success) {
             window.location.reload();
           }
         });
+      },
+      async isArticleGroupDone() {
+        this.reset_unlock = randomNumbers();
       }
     },
     async mounted() {

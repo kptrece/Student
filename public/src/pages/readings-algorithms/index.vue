@@ -7,13 +7,13 @@
         <div class="row mt-5">
           <div class="col-4">
             <ElemProgressbar  :loading="loading" />
-            <CourseList title="Sorting" :list="[]" @view="onView" />
-            <button class="btn btn-danger btn-sm py-0 py-0 mb-4" @click="resetStacksReadingTime()" ><small>Reset reading time</small></button>
-            <CourseList title="Searching" :list="[]" @view="onView" />
-            <button class="btn btn-danger btn-sm py-0 py-0 mb-4" @click="resetQueuesReadingTime()"><small>Reset reading time</small></button>
+            <CourseList title="Sorting" :unlock="reset_unlock" :btn_disabled="false" :list="list_sorting" @view="onViewSorting" />
+            <button class="btn btn-danger btn-sm py-0 py-0 mb-4" @click="resetSortingReadingTime()" ><small>Reset reading time</small></button>
+            <CourseList title="Searching" :unlock="reset_unlock" :btn_disabled="list_search_locked" :list="list_search" @view="onViewSearching" />
+            <button class="btn btn-danger btn-sm py-0 py-0 mb-4" @click="resetSearchReadingTime()"><small>Reset reading time</small></button>
           </div>
           <div class="col-8">            
-            <SectionArticleHeader :article="article" :user="user" :reset="reset"/>
+            <SectionArticleHeader :article="article" :user="user" :reset="reset" @completed="isArticleGroupDoneLocal()" />
             <div class="text-dark mt-5">
               <div v-if="article?.content" v-html="article?.content"></div>
               <div v-else class="p-5 m-5">
@@ -38,50 +38,52 @@
 </template>
 <script lang="ts">
 
-  import { defineComponent, toRaw, ref } from 'vue';
-  import { fetchAllArticlesGraphs, fetchAllArticlesQueues, resetReadingTime, lsGetUser, fetchAllArticlesStacks, printDevLog, fetchSingleArticleByTopic, scrollToTop, createReadLogs, randomNumbers, queryDelete, SystemConnections } from "@/uikit-api";
+  import { defineComponent, toRaw } from 'vue';
+  import { isArticleGroupDone, fetchAllArticlesSearching, fetchAllArticlesSorting, resetReadingTimeByGroup, lsGetUser, printDevLog, fetchSingleArticleByTopic, scrollToTop, createReadLogs, randomNumbers, queryDelete, SystemConnections } from "@/uikit-api";
   import SectionHeader from "@/components/SectionHeader.vue";
   import SectionFooter from "@/components/SectionFooter.vue";
   import CourseList from "@/components/Courses.vue";
   import SectionArticleHeader from "@/components/SectionArticleHeader.vue";
   import ElemProgressbar from '@/components/ElemProgressbar.vue';
-  import jlconfig from "@/jlconfig.json";
+  import Swal from 'sweetalert2';
 
   export default defineComponent({
     components: { SectionArticleHeader, ElemProgressbar, CourseList, SectionFooter, SectionHeader },
+    setup() {
+      return {
+        randomNumbers
+      }
+    },
     data() {
       return {
         reset: 0,
+        reset_unlock: 0,
         timeDisplay: {} as any,
         timeMax: 0,
         loading: false,
         user: {} as any,
-        article: {} as any
+        article: {} as any,
+        list_sorting: [] as any,
+        list_search: [] as any,
+        list_search_locked: true,
       }
     },
     methods: {
-      async resetStacksReadingTime() {
-        await resetReadingTime({ user_refid: this.user?.user_refid, articles: jlconfig.article_array.STACKS }).then( async (response) => {
+      async resetSortingReadingTime() {
+        await resetReadingTimeByGroup({ user_refid: this.user?.user_refid, group_code: 'SORTING' }).then( async (response) => {
           if(response?.success) {
             window.location.reload();
           }
         });
       },
-      async resetQueuesReadingTime() {
-        await resetReadingTime({ user_refid: this.user?.user_refid, articles: jlconfig.article_array.QUEUES }).then( async (response) => {
+      async resetSearchReadingTime() {
+        await resetReadingTimeByGroup({ user_refid: this.user?.user_refid, group_code: 'SEARCH' }).then( async (response) => {
           if(response?.success) {
             window.location.reload();
           }
         });
       },
-      async resetGraphsReadingTime() {
-        await resetReadingTime({ user_refid: this.user?.user_refid, articles: jlconfig.article_array.GRAPHS }).then( async (response) => {
-          if(response?.success) {
-            window.location.reload();
-          }
-        });
-      },
-      async onView(event: any) {
+      async onViewSorting(event: any) {
         this.loading = true;
         await fetchSingleArticleByTopic(event?.topic_refid).then( async (article) => {
           this.loading = false;
@@ -94,6 +96,39 @@
             this.$toast.warning("No article found");
           }
         });
+      },
+      async onViewSearching(event: any) {
+        await isArticleGroupDone(this.user?.user_refid, 'SORTING').then( async (check) => {
+          printDevLog("Check:", toRaw(check));
+          if(check?.success) {
+            this.loading = true;
+            await fetchSingleArticleByTopic(event?.topic_refid).then( async (article) => {
+              this.loading = false;
+              if(article.length > 0) {
+                scrollToTop();
+                this.article  = article[0];
+                this.reset    = randomNumbers();
+              }
+              else {
+                this.$toast.warning("No article found");
+              }
+            });
+          }
+          else {
+            Swal.fire({
+              title: "Invalid Action",
+              html: check?.message,
+              icon: "info"
+            });
+          }
+        });
+      },
+      async isArticleGroupDoneLocal() {
+        await isArticleGroupDone(this.user?.user_refid, 'SORTING').then( async (check_sorting) => {
+          printDevLog("Done Sorting:", toRaw(check_sorting));
+          this.list_search_locked = !check_sorting?.success;
+          this.reset_unlock       = randomNumbers();
+        });
       }
     },
     async mounted() {
@@ -105,8 +140,16 @@
       else {
         this.$toast.warning("Login to log reading history.")
       }
-      this.loading  = false;
-      printDevLog("Data:", this.$data);
+      await fetchAllArticlesSorting().then( async (list_sorting) => {
+        this.list_sorting = list_sorting;
+        await fetchAllArticlesSearching().then( async (list_search) => {
+          this.list_search = list_search;
+          await this.isArticleGroupDoneLocal().then( async () => {
+            this.loading  = false;
+            printDevLog("Data:", this.$data);
+          });
+        });
+      });
     }
   });
 

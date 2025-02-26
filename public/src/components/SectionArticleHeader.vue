@@ -64,6 +64,7 @@ import Swal from 'sweetalert2';
                 text: "Allocated reading time completed",
                 icon: "success"
               }).then( async () => {
+                printDevLog("Reading Status:","Completed");
                 this.$emit('completed');
               });
             });
@@ -88,6 +89,9 @@ import Swal from 'sweetalert2';
                 title: "Completed",
                 text: "Allocated reading time completed",
                 icon: "success"
+              }).then( async () => {
+                printDevLog("Reading Status:","Completed Already");
+                this.$emit('completed');
               });
             }
             else {

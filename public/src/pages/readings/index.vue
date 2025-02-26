@@ -25,10 +25,11 @@
                   <h5>Data Structure</h5>
                   <p>Data structures are a specific way of organizing data in a specialized format on a computer so that the information can be organized, processed, stored, and retrieved quickly and effectively.</p>
                 </div>
+                <ElemProgressbar :loading="loading.data_struc" />
                 <div class="card-footer">
-                  <button class="btn btn-primary w-100" @click="readDataStructure()">
+                  <button class="btn btn-primary w-100" @click="readDataStructure()" :disabled="loading.data_struc" >
                     <i class="bi bi-lock-fill me-2"></i>
-                    <span>Read</span>
+                    <span>{{ loading.data_struc ? 'Wait..':'Read' }}</span>
                   </button>
                 </div>
               </div>
@@ -40,10 +41,11 @@
                   <h5>Algorithms</h5>
                   <p>A programming algorithm is a procedure or formula used for solving a problem. It is based on conducting a sequence of specified actions in which these actions describe how to do something.</p>
                 </div>
+                <ElemProgressbar :loading="loading.algo" />
                 <div class="card-footer">
-                  <button class="btn btn-primary w-100" @click="readAlgorithms()">
+                  <button class="btn btn-primary w-100" @click="readAlgorithms()" :disabled="loading.algo">
                     <i class="bi bi-lock-fill me-2"></i>
-                    <span>Read</span>
+                    <span>{{ loading.algo ? 'Wait..':'Read' }}</span>
                   </button>
                 </div>
               </div>
@@ -63,13 +65,19 @@
   import SectionFooter from "@/components/SectionFooter.vue";
   import Courses from "@/components/Courses.vue";
   import Swal from 'sweetalert2';
+  import ElemProgressbar from '@/components/ElemProgressbar.vue';
 
   export default defineComponent({
     name: "ReadingsPage",
-    components: { Courses, SectionFooter, SectionHeader },
+    components: { ElemProgressbar, Courses, SectionFooter, SectionHeader },
     data() {
       return {
-        user: {} as any
+        user: {} as any,
+        loading: {
+          fun_of_prog: false,
+          data_struc: false,
+          algo: false
+        }
       }
     },
     methods: {
@@ -77,7 +85,9 @@
         this.$router.push("/readings-fundamental-of-programming");
       },
       async readDataStructure() {
+        this.loading.data_struc = true;
         await isFundamentalDone(this.user?.user_refid).then( async (response) => {
+          this.loading.data_struc = false;
           if(response?.success) {
             this.$router.push("/readings-data-structure");
           }
@@ -91,7 +101,9 @@
         });
       },
       async readAlgorithms() {
+        this.loading.algo = true;
         await isFundamentalDone(this.user?.user_refid).then( async (response) => {
+          this.loading.algo = false;
           if(response?.success) {
             this.$router.push("/readings-algorithms");
           }

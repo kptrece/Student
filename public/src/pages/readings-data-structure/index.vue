@@ -8,27 +8,27 @@
           <div class="col-4">
             <ElemProgressbar  :loading="loading" />
             <!--Array Topics-->
-            <CourseList title="Array" :btn_disabled="false" :list="array_list" @view="onView"/>
+            <CourseList title="Array" :unlock="reset_unlock" :btn_disabled="false" :list="array_list" @view="onView"/>
             <button class="btn btn-danger btn-sm py-0 mb-4" @click="resetArrayReadingTime()"><small>Reset reading time</small></button>
             
             <!--Linked List Topics-->
-            <CourseList title="Linked List" :btn_disabled="linked_list_locked" :list="linked_list" @view="onViewLinkList" />
+            <CourseList title="Linked List" :unlock="reset_unlock" :btn_disabled="linked_list_locked" :list="linked_list" @view="onViewLinkList" />
             <button class="btn btn-danger btn-sm py-0 mb-4" @click="resetLinkedListReadingTime()"><small>Reset reading time</small></button>
             
             <!--Stacks Topics-->
-            <CourseList title="Stacks" :btn_disabled="list_stacks_locked" :list="list_stacks" @view="onViewStack" />
+            <CourseList title="Stacks" :unlock="reset_unlock" :btn_disabled="list_stacks_locked" :list="list_stacks" @view="onViewStack" />
             <button class="btn btn-danger btn-sm py-0 mb-4" @click="resetStackReadingTime()"><small>Reset reading time</small></button>
           
             <!--Queues Topics-->
-            <CourseList title="Queues" :btn_disabled="list_queues_locked" :list="list_queues" @view="onViewQueues" />
+            <CourseList title="Queues" :unlock="reset_unlock" :btn_disabled="list_queues_locked" :list="list_queues" @view="onViewQueues" />
             <button class="btn btn-danger btn-sm py-0 mb-4" @click="resetQueuesReadingTime()"><small>Reset reading time</small></button>
 
             <!--Graphs Topics-->
-            <CourseList title="Graphs" :btn_disabled="list_graphs_locked" :list="list_graphs" @view="onViewGraphs" />
+            <CourseList title="Graphs" :unlock="reset_unlock" :btn_disabled="list_graphs_locked" :list="list_graphs" @view="onViewGraphs" />
             <button class="btn btn-danger btn-sm py-0 mb-4" @click="resetGraphReadingTime()"><small>Reset reading time</small></button>
           </div>
           <div class="col-8">            
-            <SectionArticleHeader :article="article" :user="user" :reset="reset" @completed="isArticleGroupDone()" />
+            <SectionArticleHeader :article="article" :user="user" :reset="reset" @completed="isArticleGroupDoneLocal()" />
             <div class="text-dark mt-5">
               <div v-if="article?.content" v-html="article?.content"></div>
               <div v-else class="p-5 m-5">
@@ -54,7 +54,7 @@
 <script lang="ts">
 
   import { defineComponent, toRaw } from 'vue';
-  import { fetchAllArticlesGraphs, fetchAllArticlesQueues, fetchAllArticlesStacks, isArticleGroupDone, resetReadingTime, lsGetUser, fetchAllArticlesArrays, fetchAllArticlesLinkedList, printDevLog, fetchSingleArticleByTopic, scrollToTop, createReadLogs, randomNumbers, queryDelete, SystemConnections } from "@/uikit-api";
+  import { fetchAllArticlesGraphs, fetchAllArticlesQueues, fetchAllArticlesStacks, isArticleGroupDone, resetReadingTimeByGroup, lsGetUser, fetchAllArticlesArrays, fetchAllArticlesLinkedList, printDevLog, fetchSingleArticleByTopic, scrollToTop, createReadLogs, randomNumbers, queryDelete, SystemConnections } from "@/uikit-api";
   import SectionHeader from "@/components/SectionHeader.vue";
   import SectionFooter from "@/components/SectionFooter.vue";
   import CourseList from "@/components/Courses.vue";
@@ -68,6 +68,7 @@
     data() {
       return {
         reset: 0,
+        reset_unlock: 0,
         timeDisplay: {} as any,
         timeMax: 0,
         loading: false,
@@ -86,35 +87,35 @@
     },
     methods: {
       async resetArrayReadingTime() {
-        await resetReadingTime({ user_refid: this.user?.user_refid, articles: jlconfig.article_array.ARRAY }).then( async (response) => {
+        await resetReadingTimeByGroup({ user_refid: this.user?.user_refid, group_code: 'ARRAY'}).then( async (response) => {
           if(response?.success) {
             window.location.reload();
           }
         });
       },
       async resetLinkedListReadingTime() {
-        await resetReadingTime({ user_refid: this.user?.user_refid, articles: jlconfig.article_array.LINKED_LIST }).then( async (response) => {
+        await resetReadingTimeByGroup({ user_refid: this.user?.user_refid, group_code:'LINKED_LIST'}).then( async (response) => {
           if(response?.success) {
             window.location.reload();
           }
         });
       },
       async resetStackReadingTime() {
-        await resetReadingTime({ user_refid: this.user?.user_refid, articles: jlconfig.article_array.STACKS }).then( async (response) => {
+        await resetReadingTimeByGroup({ user_refid: this.user?.user_refid, group_code: 'STACKS'}).then( async (response) => {
           if(response?.success) {
             window.location.reload();
           }
         });
       },
       async resetQueuesReadingTime() {
-        await resetReadingTime({ user_refid: this.user?.user_refid, articles: jlconfig.article_array.QUEUES }).then( async (response) => {
+        await resetReadingTimeByGroup({ user_refid: this.user?.user_refid, group_code:'QUEUES'}).then( async (response) => {
           if(response?.success) {
             window.location.reload();
           }
         });
       },
       async resetGraphReadingTime() {
-        await resetReadingTime({ user_refid: this.user?.user_refid, articles: jlconfig.article_array.GRAPHS }).then( async (response) => {
+        await resetReadingTimeByGroup({ user_refid: this.user?.user_refid, group_code: 'GRAPHS'}).then( async (response) => {
           if(response?.success) {
             window.location.reload();
           }
@@ -238,7 +239,8 @@
           }
         });
       },
-      async isArticleGroupDone() {
+      async isArticleGroupDoneLocal() {
+        this.reset_unlock = randomNumbers();
         await isArticleGroupDone(this.user?.user_refid, 'ARRAYS').then( async (check_array) => {
           this.linked_list_locked = !check_array?.success;
           await isArticleGroupDone(this.user?.user_refid, 'LINKED_LIST').then( async (check_linked_list) => {
@@ -272,7 +274,7 @@
               this.list_queues = list_queues;
               await fetchAllArticlesGraphs().then( async (list_graphs) => {
                 this.list_graphs = list_graphs;
-                await this.isArticleGroupDone().then( async () => {
+                await this.isArticleGroupDoneLocal().then( async () => {
                   this.loading  = false;
                   printDevLog("Data:", this.$data);
                 });
