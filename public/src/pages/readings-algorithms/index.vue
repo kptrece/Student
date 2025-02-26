@@ -7,15 +7,13 @@
         <div class="row mt-5">
           <div class="col-4">
             <ElemProgressbar  :loading="loading" />
-            <CourseList title="Stacks" :list="list_stacks" @view="onView" />
+            <CourseList title="Sorting" :list="[]" @view="onView" />
             <button class="btn btn-danger btn-sm py-0 py-0 mb-4" @click="resetStacksReadingTime()" ><small>Reset reading time</small></button>
-            <CourseList title="Queues" :list="list_queues" @view="onView" />
+            <CourseList title="Searching" :list="[]" @view="onView" />
             <button class="btn btn-danger btn-sm py-0 py-0 mb-4" @click="resetQueuesReadingTime()"><small>Reset reading time</small></button>
-            <CourseList title="Graphs" :list="list_graph" @view="onView" />
-            <button class="btn btn-danger btn-sm py-0 py-0" @click="resetGraphsReadingTime()"><small>Reset reading time</small></button>
           </div>
           <div class="col-8">            
-            <SectionArticleHeader :article="article" :user="user" :duration="180" :reset="reset"/>
+            <SectionArticleHeader :article="article" :user="user" :reset="reset"/>
             <div class="text-dark mt-5">
               <div v-if="article?.content" v-html="article?.content"></div>
               <div v-else class="p-5 m-5">
@@ -58,9 +56,6 @@
         timeMax: 0,
         loading: false,
         user: {} as any,
-        list_stacks: [] as any,
-        list_queues: [] as any,
-        list_graph:  [] as any,
         article: {} as any
       }
     },
@@ -110,17 +105,8 @@
       else {
         this.$toast.warning("Login to log reading history.")
       }
-      await fetchAllArticlesStacks().then( async (list_stacks) => {
-        this.list_stacks     = toRaw(list_stacks);
-        await fetchAllArticlesQueues().then( async (list_queues) => {
-          this.list_queues = list_queues;
-          await fetchAllArticlesGraphs().then( async (list_graph) => {
-            this.list_graph = list_graph;
-          });
-        });
-        this.loading  = false;
-        printDevLog("Data:", this.$data);
-      });
+      this.loading  = false;
+      printDevLog("Data:", this.$data);
     }
   });
 

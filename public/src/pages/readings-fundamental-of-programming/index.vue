@@ -8,10 +8,11 @@
           <div class="col-4">
             <ElemProgressbar :loading="loading" />
             <CourseList title="Fundamental of Programming" :list="list" @view="onView" />
+            <button class="btn btn-danger btn-sm py-0 py-0" @click="resetFundamentalReadingTime()"><small>Reset reading time</small></button>
           </div>
           <div class="col-8">            
-            <h3 class="text-center my-4">{{ article?.description }}</h3>
-            <div class="text-dark">
+            <SectionArticleHeader :article="article" :user="user" :reset="reset"/>
+            <div class="text-dark mt-5">
               <div v-if="article?.content" v-html="article?.content"></div>
               <div v-else class="p-5 m-5">
                 <div class="card">
@@ -36,18 +37,19 @@
 <script lang="ts">
 
   import { defineComponent, toRaw } from 'vue';
-  import { lsGetUser, fetchAllArticlesFunOfProg, printDevLog, fetchSingleArticleByTopic, scrollToTop, createReadLogs } from "@/uikit-api";
-  import { Timer } from "@/uikit-api/utility/timer";
+  import { resetReadingTime, randomNumbers, lsGetUser, fetchAllArticlesFunOfProg, printDevLog, fetchSingleArticleByTopic, scrollToTop, createReadLogs } from "@/uikit-api";
   import SectionHeader from "@/components/SectionHeader.vue";
   import SectionFooter from "@/components/SectionFooter.vue";
   import CourseList from "@/components/Courses.vue";
   import ElemProgressbar from '@/components/ElemProgressbar.vue';
-import { time } from 'console';
+  import SectionArticleHeader from "@/components/SectionArticleHeader.vue";
+  import jlconfig from "@/jlconfig.json";
 
   export default defineComponent({
-    components: { ElemProgressbar, CourseList, SectionFooter, SectionHeader },
+    components: { SectionArticleHeader, ElemProgressbar, CourseList, SectionFooter, SectionHeader },
     data() {
       return {
+        reset: 0,
         loading: false,
         user: {} as any,
         list: [] as any,
@@ -61,11 +63,18 @@ import { time } from 'console';
           this.loading = false;
           if(article.length > 0) {
             scrollToTop();
-            this.article = article[0];
-            await createReadLogs({ article_refid: article[0]?.article_refid, topic_refid: article[0]?.topic_refid, user_refid: this.user?.user_refid});
+            this.article  = article[0];
+            this.reset    = randomNumbers();
           }
           else {
             this.$toast.warning("No article found");
+          }
+        });
+      },
+      async resetFundamentalReadingTime() {
+        await resetReadingTime({ user_refid: this.user?.user_refid, articles: jlconfig.article_array.FUN_OF_PROG }).then( async (response) => {
+          if(response?.success) {
+            window.location.reload();
           }
         });
       }
@@ -82,8 +91,6 @@ import { time } from 'console';
       await fetchAllArticlesFunOfProg().then( async (list) => {
         this.list     = toRaw(list);
         this.loading  = false;
-        const timer   = new Timer(3665);
-        timer.start();
         printDevLog("Data:", this.$data);
       });
     },

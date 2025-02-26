@@ -77,10 +77,32 @@
         this.$router.push("/readings-fundamental-of-programming");
       },
       async readDataStructure() {
-        this.$router.push("/readings-data-structure");
+        await isFundamentalDone(this.user?.user_refid).then( async (response) => {
+          if(response?.success) {
+            this.$router.push("/readings-data-structure");
+          }
+          else {
+            Swal.fire({
+              title: "Invalid Action",
+              html: response?.message,
+              icon: "info"
+            });
+          }
+        });
       },
       async readAlgorithms() {
-        this.$router.push("/readings-algorithms");
+        await isFundamentalDone(this.user?.user_refid).then( async (response) => {
+          if(response?.success) {
+            this.$router.push("/readings-algorithms");
+          }
+          else {
+            Swal.fire({
+              title: "Invalid Action",
+              html: response?.message,
+              icon: "info"
+            });
+          }
+        });
       }
     },
     async mounted() {

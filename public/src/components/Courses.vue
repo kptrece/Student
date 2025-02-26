@@ -9,8 +9,10 @@
       <tbody>
         <tr v-for="(item, i) in list" :key="i">
           <td><small>{{ item?.name }}</small></td>
-          <td style="width: 80px;">
+          <td style="width: 90px;">
             <button class="btn btn-primary btn-sm" @click="()=>{ $emit('view', item) }">
+              <i v-if="btn_disabled" class="bi bi-lock-fill me-1"></i>
+              <i v-else class="bi bi-unlock-fill me-1"></i>
               <span>Read</span>
             </button>
           </td>
@@ -33,6 +35,10 @@
       list: {
         default: {} as any,
         type: Object
+      },
+      btn_disabled: {
+        default: true,
+        type: Boolean
       }
     }
   });

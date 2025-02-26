@@ -32,6 +32,7 @@ import Swal from 'sweetalert2';
 
   export default defineComponent({
     name: "SectionArticleHeader",
+    emits: ['completed'],
     props: {
       article: {
         default: {} as any,
@@ -40,10 +41,6 @@ import Swal from 'sweetalert2';
       user: {
         default: {} as any,
         type: Object
-      },
-      duration: {
-        default: 0,
-        type: Number
       },
       reset: {
         default: 0,
@@ -66,10 +63,12 @@ import Swal from 'sweetalert2';
                 title: "Completed",
                 text: "Allocated reading time completed",
                 icon: "success"
+              }).then( async () => {
+                this.$emit('completed');
               });
             });
           }
-        },this.duration); 
+        },this.article?.reading_time); 
       }
     },
     watch: {
