@@ -13,7 +13,10 @@
               <div class="card-body">
                 <h5>Arrays Visualization</h5>
                 <p><small>Show indexed collection of elements in a sequential layout.</small></p>
-                <button class="btn btn-primary w-100" @click="()=>{ $router.push('/datastructures-array'); }" >View</button>
+                <button class="btn btn-primary w-100" @click="()=>{ $router.push('/datastructures-array'); }" >
+                  <i class="bi bi-unlock-fill me-1"></i>
+                  <span>View</span>
+                </button>
               </div>
             </div>
           </div>
@@ -23,7 +26,11 @@
               <div class="card-body">
                 <h5>Linked List Visualization</h5>
                 <p><small>Display nodes linked sequentially with pointers or references.</small></p>
-                <button class="btn btn-primary w-100" @click="()=>{ $router.push('/datastructures-linked-list'); }">View</button>
+                <button class="btn btn-primary w-100" :disabled="!views?.ARRAY" @click="()=>{ $router.push('/datastructures-linked-list'); }">
+                  <i v-if="!views?.ARRAY" class="bi bi-lock-fill me-1"></i>
+                  <i v-else class="bi bi-unlock-fill me-1"></i>
+                  <span>View</span>
+                </button>
               </div>
             </div>
           </div>
@@ -33,7 +40,11 @@
               <div class="card-body">
                 <h5>Graphs Visualization</h5>
                 <p><small>Visualize nodes and edges with directed or undirected connections</small></p>
-                <button class="btn btn-primary w-100" @click="()=>{ $router.push('/datastructures-graphs'); }">View</button>
+                <button class="btn btn-primary w-100" :disabled="!views?.LINKED_LIST" @click="()=>{ $router.push('/datastructures-graphs'); }">
+                  <i v-if="!views?.LINKED_LIST" class="bi bi-lock-fill me-1"></i>
+                  <i v-else class="bi bi-unlock-fill me-1"></i>
+                  <span>View</span>
+                </button>
               </div>
             </div>
           </div>
@@ -43,7 +54,11 @@
               <div class="card-body">
                 <h5>Stacks Visualization</h5>
                 <p><small>Represent LIFO structure with push, pop, and peek actions.</small></p>
-                <button class="btn btn-primary w-100" @click="()=>{ $router.push('/datastructures-stacks'); }">View</button>
+                <button class="btn btn-primary w-100" :disabled="!views?.GRAPHS" @click="()=>{ $router.push('/datastructures-stacks'); }">
+                  <i v-if="!views?.STACKS" class="bi bi-lock-fill me-1"></i>
+                  <i v-else class="bi bi-unlock-fill me-1"></i>
+                  <span>View</span>
+                </button>
               </div>
             </div>
           </div>
@@ -53,7 +68,11 @@
               <div class="card-body">
                 <h5>Queues Visualization</h5>
                 <p><small>Simulate FIFO structure with enqueue and dequeue operations.</small></p>
-                <button class="btn btn-primary w-100" @click="()=>{ $router.push('/datastructures-queues'); }">View</button>
+                <button class="btn btn-primary w-100" :disabled="!views?.STACKS" @click="()=>{ $router.push('/datastructures-queues'); }">
+                  <i v-if="!views?.QUEUES" class="bi bi-lock-fill me-1"></i>
+                  <i v-else class="bi bi-unlock-fill me-1"></i>
+                  <span>View</span>
+                </button>
               </div>
             </div>
           </div>
@@ -66,13 +85,36 @@
 </template>
 <script lang="ts">
 
-  import { defineComponent } from 'vue';
+  import { defineComponent, toRaw } from 'vue';
+  import { lsGetUser, printDevLog, queryURL } from '@/uikit-api';
   import SectionHeader from "@/components/SectionHeader.vue";
   import SectionFooter from "@/components/SectionFooter.vue";
 
   export default defineComponent({
     name: "CoursesPage",
-    components: { SectionFooter, SectionHeader }
+    components: { SectionFooter, SectionHeader },
+    data() {
+      return {
+        user: {} as any,
+        views: {} as any
+      }
+    },
+    methods: {
+      async onFetchViews() {
+        await queryURL({ url: "util_quiz/visualViewsChecker?user_refid=" + this.user?.user_refid }).then( async (response) => {
+          this.views = response;
+        });
+      }
+    },
+    async mounted() {
+      const user = await lsGetUser() as any;
+      if(user?.user_refid) {
+        this.user = user;
+      }
+      await this.onFetchViews().then( async () => {
+        printDevLog("DS Data:", toRaw(this.$data));
+      });
+    },
   });
 
 </script>

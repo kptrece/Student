@@ -8,6 +8,7 @@
             <h1 class="text-center">Interactive Array Visualization</h1>
           </div>
         </div>
+        <SectionVisualizationTimer group_code="ARRAY"/>
         <iframe class="w-100 border-0" style="height: 600px;"  src="https://algo-spear-visualization.web.app/arrays.html"></iframe>
       </div>
     </main>
@@ -19,10 +20,11 @@
   import { defineComponent } from 'vue';
   import SectionHeader from "@/components/SectionHeader.vue";
   import SectionFooter from "@/components/SectionFooter.vue";
+  import SectionVisualizationTimer from "@/components/SectionVisualizationTimer.vue";
 
   export default defineComponent({
     name: "VisualizationArrayPage",
-    components: { SectionFooter, SectionHeader }
+    components: { SectionVisualizationTimer, SectionFooter, SectionHeader }
   });
 
 </script>

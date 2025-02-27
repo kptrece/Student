@@ -26,7 +26,7 @@
 
   import { defineComponent, toRaw } from 'vue';
   import { createReadLogs, printDevLog, queryCount, SystemConnections, timerStartTimer } from '@/uikit-api';
-import Swal from 'sweetalert2';
+  import Swal from 'sweetalert2';
 
   let stopTimer: (() => void) | null = null;
 

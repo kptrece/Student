@@ -8,7 +8,8 @@
             <h1 class="text-center py-5">Graph Visualization</h1>
           </div>
         </div>
-        <iframe class="w-100 border-0" style="height: 800px;"  src="https://algo-spear-visualization.web.app/graphs.html"></iframe>
+        <SectionVisualizationTimer group_code="GRAPHS"/>
+        <iframe class="w-100 border-0 mt-4" style="height: 800px;"  src="https://algo-spear-visualization.web.app/graphs.html"></iframe>
       </div>
     </main>
     <SectionFooter/>
@@ -19,10 +20,11 @@
   import { defineComponent } from 'vue';
   import SectionHeader from "@/components/SectionHeader.vue";
   import SectionFooter from "@/components/SectionFooter.vue";
+  import SectionVisualizationTimer from "@/components/SectionVisualizationTimer.vue";
 
   export default defineComponent({
     name: "VisualizationGraphPage",
-    components: { SectionFooter, SectionHeader }
+    components: { SectionVisualizationTimer, SectionFooter, SectionHeader }
   });
 
 </script>

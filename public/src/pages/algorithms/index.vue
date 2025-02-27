@@ -13,7 +13,11 @@
               <div class="card-body">
                 <h5>Sorting Visualization</h5>
                 <p><small>Demonstrate reordering of elements in ascending or descending order.</small></p>
-                <button class="btn btn-primary w-100" @click="()=>{ $router.push('/algorithms-sorting'); }">View</button>
+                <button class="btn btn-primary w-100" :disabled="!views?.QUEUES" @click="()=>{ $router.push('/algorithms-sorting'); }">
+                  <i v-if="!views?.QUEUES" class="bi bi-lock-fill me-1"></i>
+                  <i v-else class="bi bi-unlock-fill me-1"></i>
+                  <span>View</span>
+                </button>
               </div>
             </div>
           </div>
@@ -23,7 +27,11 @@
               <div class="card-body">
                 <h5>Searching Visualization</h5>
                 <p><small>Illustrate locating an element within a dataset using various algorithms.</small></p>
-                <button class="btn btn-primary w-100" @click="()=>{ $router.push('/algorithms-searching'); }">View</button>
+                <button class="btn btn-primary w-100" :disabled="!views?.SORTING" @click="()=>{ $router.push('/algorithms-searching'); }">
+                  <i v-if="!views?.SORTING" class="bi bi-lock-fill me-1"></i>
+                  <i v-else class="bi bi-unlock-fill me-1"></i>
+                  <span>View</span>
+                </button>
               </div>
             </div>
           </div>
@@ -35,13 +43,36 @@
 </template>
 <script lang="ts">
 
-  import { defineComponent } from 'vue';
+  import { defineComponent, toRaw } from 'vue';
+  import { lsGetUser, printDevLog, queryURL } from '@/uikit-api';
   import SectionHeader from "@/components/SectionHeader.vue";
   import SectionFooter from "@/components/SectionFooter.vue";
 
   export default defineComponent({
     name: "AlgorithmsPage",
-    components: { SectionFooter, SectionHeader }
+    components: { SectionFooter, SectionHeader },
+    data() {
+      return {
+        user: {} as any,
+        views: {} as any
+      }
+    },
+    methods: {
+      async onFetchViews() {
+        await queryURL({ url: "util_quiz/visualViewsChecker?user_refid=" + this.user?.user_refid }).then( async (response) => {
+          this.views = response;
+        });
+      }
+    },
+    async mounted() {
+      const user = await lsGetUser() as any;
+      if(user?.user_refid) {
+        this.user = user;
+      }
+      await this.onFetchViews().then( async () => {
+        printDevLog("DS Data:", toRaw(this.$data));
+      });
+    },
   });
 
 </script>
