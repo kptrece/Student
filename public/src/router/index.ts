@@ -84,9 +84,6 @@ const router = createRouter({
         requiresAuth: false
       },
     },
-
-
-
     {
       path: '/videos',
       name: 'videos',
