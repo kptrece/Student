@@ -9,7 +9,7 @@
             <div class="card">
               <div class="card-body">
                 <div style="width: 450px;">
-                  <h1 class="text-center">Algo Spear</h1>
+                  <h1 class="text-center">AlgoSpear</h1>
                   <div class="mt-5">
                     <div class="mb-3">
                       <label class="form-label">Email</label>
