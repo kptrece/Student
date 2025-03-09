@@ -13,7 +13,7 @@
           <div class="col-4"></div>
           <div class="col-12">
             <swiper :slides-per-view="1" :space-between="0" @swiper="onSwiper">
-              <swiper-slide class="swiper-no-swiping"><TopicList :excercise="excercise" @view="viewExam" /></swiper-slide>
+              <swiper-slide class="swiper-no-swiping"><TopicList :excercise="excercise" :locked="lockedQuiz" @view="viewExam" /></swiper-slide>
               <swiper-slide class="swiper-no-swiping">
                 <ExamSpace 
                   :reset="reset"
@@ -35,7 +35,7 @@
 <script lang="ts">
 
   import { defineComponent, toRaw } from 'vue';
-  import { lsGetUser, fetchRandomExcercises, printDevLog, queryURL, randomNumbers } from '@/uikit-api';
+  import { lsGetUser, fetchRandomExcercises, printDevLog, queryURL, randomNumbers, queryFetchAll, fetchExerciseById,fetchAllQuestionnaireCategory } from '@/uikit-api';
   import { Swiper, SwiperSlide } from 'swiper/vue';
   import SectionHeader from "@/components/SectionHeader.vue";
   import SectionFooter from "@/components/SectionFooter.vue";
@@ -69,7 +69,10 @@
         excercise: {} as any,
         reset: 0,
         category: {} as any,
-        questionnaires: {} as any
+        categories: [],
+        exercises: [],
+        questionnaires: {} as any,
+        lockedQuiz: true
       }
     },
     methods: {
@@ -80,6 +83,23 @@
           this.excercise  = excercise;
           this.isPassedAll();
         });
+
+        await fetchExerciseById(this.user?.user_refid).then( async (excercises) => {
+          this.exercises = excercises.filter((exercise: any) => exercise?.passed)
+          console.log("exercise: ", excercises);
+        });
+
+        await fetchAllQuestionnaireCategory().then( async (categories) => {
+          this.categories = categories
+          console.log("categories: ", categories);
+        });
+
+        this.lockedQuiz = !this.categories?.every((category: any) => {
+          let categoryRefId = category?.group_refid
+          return this.exercises?.some((exercise: any) => exercise?.category_refid == categoryRefId)
+        })
+
+        console.log("quiz: ", this.lockedQuiz)
       },
       isPassedAll() {
         var passed = 0;
@@ -100,13 +120,6 @@
             title: "Completed",
             text: "You've passed the excercises already",
             icon: "info"
-          });
-        }
-        else if(!exam?.passed) {
-          Swal.fire({
-            title: "Failed Quiz",
-            text: "You already failed this quiz.",
-            icon: "error"
           });
         }
         else {
@@ -145,6 +158,7 @@
       await this.initExercises().then( async () => {
         printDevLog("Quiz:", toRaw(this.$data));
       });
+      
     },
   });
 

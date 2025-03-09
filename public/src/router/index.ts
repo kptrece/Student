@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { isAuthenticated } from '@/uikit-api';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -63,7 +64,7 @@ const router = createRouter({
       component: () => import('@/pages/readings-algorithms/index.vue'),
       meta: {
         title: "Reading Algorithms",
-        requiresAuth: false
+        requiresAuth: true
       },
     },
     {
@@ -72,7 +73,7 @@ const router = createRouter({
       component: () => import('@/pages/readings-data-structure/index.vue'),
       meta: {
         title: "Data Structure",
-        requiresAuth: false
+        requiresAuth: true
       },
     },
     {
@@ -121,12 +122,21 @@ const router = createRouter({
       },
     },
     {
+      path: '/sign-up',
+      name: 'sign-up',
+      component: () => import('@/pages/sign-up/index.vue'),
+      meta: {
+        title: "Sign Up",
+        requiresAuth: false
+      },
+    },
+    {
       path: '/datastructures-array',
       name: 'datastructures_array',
       component: () => import('@/pages/datastructures-array/index.vue'),
       meta: {
         title: "Datastructures Array",
-        requiresAuth: false
+        requiresAuth: true
       },
     },
     {
@@ -135,7 +145,7 @@ const router = createRouter({
       component: () => import('@/pages/datastructures-graphs/index.vue'),
       meta: {
         title: "Datastructures Graphs",
-        requiresAuth: false
+        requiresAuth: true
       },
     },
     {
@@ -144,7 +154,7 @@ const router = createRouter({
       component: () => import('@/pages/datastructures-linked-list/index.vue'),
       meta: {
         title: "Datastructures Linked List",
-        requiresAuth: false
+        requiresAuth: true
       },
     },
     {
@@ -153,7 +163,7 @@ const router = createRouter({
       component: () => import('@/pages/datastructures-queues/index.vue'),
       meta: {
         title: "Datastructures Queues",
-        requiresAuth: false
+        requiresAuth: true
       },
     },
     {
@@ -162,7 +172,7 @@ const router = createRouter({
       component: () => import('@/pages/datastructures-stacks/index.vue'),
       meta: {
         title: "Datastructures Stacks",
-        requiresAuth: false
+        requiresAuth: true
       },
     },
 
@@ -172,7 +182,7 @@ const router = createRouter({
       component: () => import('@/pages/algorithms-searching/index.vue'),
       meta: {
         title: "Algorithms Searching",
-        requiresAuth: false
+        requiresAuth: true
       },
     },
     {
@@ -181,10 +191,23 @@ const router = createRouter({
       component: () => import('@/pages/algorithms-sorting/index.vue'),
       meta: {
         title: "Algorithms Sorting",
-        requiresAuth: false
+        requiresAuth: true
       },
-    },
+    }
   ],
 })
+
+router.beforeEach((to, from, next) => {
+  const isLoggedIn = isAuthenticated(); // Example of checking if user is logged in via localStorage
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+      if (!isLoggedIn) {
+          next({ name: 'login' }); // Redirect to login if the user is not authenticated
+      } else {
+          next(); // Continue to the requested route
+      }
+  } else {
+      next(); // If no auth is required, just continue
+  }
+});
 
 export default router

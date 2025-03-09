@@ -8,22 +8,28 @@
           <div class="col-4">
             <ElemProgressbar  :loading="loading" />
             <!--Array Topics-->
+            <ProgressBar :percentage="arrayProgressPercentage" :height="25"/>
             <CourseList title="Array" :unlock="reset_unlock" :btn_disabled="false" :list="array_list" @view="onView"/>
             <button class="btn btn-danger btn-sm py-0 mb-4" @click="resetArrayReadingTime()"><small>Reset reading time</small></button>
             
             <!--Linked List Topics-->
+            <ProgressBar :percentage="linkListProgressPercentage" :height="25"/>
             <CourseList title="Linked List" :unlock="reset_unlock" :btn_disabled="linked_list_locked" :list="linked_list" @view="onViewLinkList" />
             <button class="btn btn-danger btn-sm py-0 mb-4" @click="resetLinkedListReadingTime()"><small>Reset reading time</small></button>
             
             <!--Stacks Topics-->
+            <ProgressBar :percentage="stacksProgressPercentage" :height="25"/>
             <CourseList title="Stacks" :unlock="reset_unlock" :btn_disabled="list_stacks_locked" :list="list_stacks" @view="onViewStack" />
             <button class="btn btn-danger btn-sm py-0 mb-4" @click="resetStackReadingTime()"><small>Reset reading time</small></button>
           
             <!--Queues Topics-->
+            <ProgressBar :percentage="queuesProgressPercentage" :height="25"/>
             <CourseList title="Queues" :unlock="reset_unlock" :btn_disabled="list_queues_locked" :list="list_queues" @view="onViewQueues" />
             <button class="btn btn-danger btn-sm py-0 mb-4" @click="resetQueuesReadingTime()"><small>Reset reading time</small></button>
 
             <!--Graphs Topics-->
+            <ProgressBar :percentage="graphsProgressPercentage" :height="25"/>
+            
             <CourseList title="Graphs" :unlock="reset_unlock" :btn_disabled="list_graphs_locked" :list="list_graphs" @view="onViewGraphs" />
             <button class="btn btn-danger btn-sm py-0 mb-4" @click="resetGraphReadingTime()"><small>Reset reading time</small></button>
           </div>
@@ -54,17 +60,18 @@
 <script lang="ts">
 
   import { defineComponent, toRaw } from 'vue';
-  import { fetchAllArticlesGraphs, fetchAllArticlesQueues, fetchAllArticlesStacks, isArticleGroupDone, resetReadingTimeByGroup, lsGetUser, fetchAllArticlesArrays, fetchAllArticlesLinkedList, printDevLog, fetchSingleArticleByTopic, scrollToTop, createReadLogs, randomNumbers, queryDelete, SystemConnections } from "@/uikit-api";
+  import { fetchAllArticlesGraphs, fetchAllArticlesQueues, fetchAllArticlesStacks, isArticleGroupDone, resetReadingTimeByGroup, lsGetUser, fetchAllArticlesArrays, fetchAllArticlesLinkedList, printDevLog, fetchSingleArticleByTopic, scrollToTop, createReadLogs, randomNumbers, queryDelete, SystemConnections,fetchArticleReadsById,isFundamentalDone } from "@/uikit-api";
   import SectionHeader from "@/components/SectionHeader.vue";
   import SectionFooter from "@/components/SectionFooter.vue";
   import CourseList from "@/components/Courses.vue";
+  import ProgressBar from '@/components/ProgressBar.vue';
   import SectionArticleHeader from "@/components/SectionArticleHeader.vue";
   import ElemProgressbar from '@/components/ElemProgressbar.vue';
   import jlconfig from "@/jlconfig.json";
   import Swal from 'sweetalert2';
 
   export default defineComponent({
-    components: { SectionArticleHeader, ElemProgressbar, CourseList, SectionFooter, SectionHeader },
+    components: { SectionArticleHeader, ElemProgressbar, CourseList, SectionFooter, SectionHeader, ProgressBar },
     data() {
       return {
         reset: 0,
@@ -82,7 +89,14 @@
         list_queues_locked: true,
         list_graphs:  [] as any,
         list_graphs_locked: true,
-        article: {} as any
+        article: {} as any,
+        articleRed: {} as any,
+        arrayProgressPercentage: 0,
+        linkListProgressPercentage: 0,
+        stacksProgressPercentage: 0,
+        queuesProgressPercentage: 0,
+        graphsProgressPercentage: 0,
+
       }
     },
     methods: {
@@ -240,6 +254,9 @@
         });
       },
       async isArticleGroupDoneLocal() {
+
+        await this.loadProgress()
+
         this.reset_unlock = randomNumbers();
         await isArticleGroupDone(this.user?.user_refid, 'ARRAYS').then( async (check_array) => {
           this.linked_list_locked = !check_array?.success;
@@ -253,6 +270,56 @@
             });
           });
         });
+      },
+      async loadProgress(){
+        await fetchArticleReadsById(this.user?.user_refid).then( async (list) => {
+          this.articleRed = list;
+        });
+
+        //array progress
+        let arrayDone = 0
+        this.array_list.forEach((article: any) => {
+          if(this.articleRed.some((articleRed:any) => article?.topic_refid == articleRed?.topic_refid)){
+            arrayDone++
+          }
+        });
+        this.arrayProgressPercentage = Math.floor(arrayDone / this.array_list.length * 100)
+
+        //linklist progression
+        let linkListDone = 0
+        this.linked_list.forEach((article: any) => {
+          if(this.articleRed.some((articleRed:any) => article?.topic_refid == articleRed?.topic_refid)){
+            linkListDone++
+          }
+        });
+        this.linkListProgressPercentage = Math.floor(linkListDone / this.linked_list.length * 100)
+
+        //stacks progression
+        let stacksDone = 0
+        this.list_stacks.forEach((article: any) => {
+          if(this.articleRed.some((articleRed:any) => article?.topic_refid == articleRed?.topic_refid)){
+            stacksDone++
+          }
+        });
+        this.stacksProgressPercentage = Math.floor(stacksDone / this.list_stacks.length * 100)
+
+        //queues progression
+        let queuesDone = 0
+        this.list_queues.forEach((article: any) => {
+          if(this.articleRed.some((articleRed:any) => article?.topic_refid == articleRed?.topic_refid)){
+            queuesDone++
+          }
+        });
+        this.queuesProgressPercentage = Math.floor(queuesDone / this.list_queues.length * 100)
+
+        //graphs progression
+        let graphsDone = 0
+        this.list_graphs.forEach((article: any) => {
+          if(this.articleRed.some((articleRed:any) => article?.topic_refid == articleRed?.topic_refid)){
+            graphsDone++
+          }
+        });
+        this.graphsProgressPercentage = Math.floor(graphsDone / this.list_graphs.length * 100)
       }
     },
     async mounted() {
@@ -260,6 +327,19 @@
       const user = await lsGetUser() as any;
       if(user?.user_refid) {
         this.user = user;
+
+        await isFundamentalDone(this.user?.user_refid).then( async (response) => {
+          //this.loading.algo = false;
+          if(!response?.success) {
+            Swal.fire({
+              title: "Invalid Action",
+              html: response?.message,
+              icon: "info"
+            }).then(() => {
+              this.$router.push("/readings");
+            })
+          }
+        });
       }
       else {
         this.$toast.warning("Login to log reading history.")
@@ -283,6 +363,10 @@
           });
         });
       });
+
+      if(user?.user_refid) {
+        await this.loadProgress()
+      }
     }
   });
 

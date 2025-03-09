@@ -59,6 +59,7 @@
           this.timeDisplay = newTime;
           if(newTime?.seconds == 0) {
             await createReadLogs({ article_refid: this.article?.article_refid, topic_refid: this.article?.topic_refid, user_refid: this.user?.user_refid}).then( async (logs) => {
+              console.log("asdasd: ",logs);
               Swal.fire({
                 title: "Completed",
                 text: "Allocated reading time completed",
@@ -85,14 +86,15 @@
           }).then( async (seen) => {
             printDevLog("Seen:", seen);
             if(seen == 1) {
-              Swal.fire({
-                title: "Completed",
-                text: "Allocated reading time completed",
-                icon: "success"
-              }).then( async () => {
-                printDevLog("Reading Status:","Completed Already");
-                this.$emit('completed');
-              });
+              this.$emit('completed')
+              // Swal.fire({
+              //   title: "Completed",
+              //   text: "Allocated reading time completed",
+              //   icon: "success"
+              // }).then( async () => {
+              //   printDevLog("Reading Status:","Completed Already");
+              //   this.$emit('completed');
+              // });
             }
             else {
               this.startTimer();

@@ -7,8 +7,11 @@
         <div class="row mt-5">
           <div class="col-4">
             <ElemProgressbar  :loading="loading" />
+            <ProgressBar :height="25" :percentage="sortingProgress" />
             <CourseList title="Sorting" :unlock="reset_unlock" :btn_disabled="false" :list="list_sorting" @view="onViewSorting" />
             <button class="btn btn-danger btn-sm py-0 py-0 mb-4" @click="resetSortingReadingTime()" ><small>Reset reading time</small></button>
+
+            <ProgressBar :height="25" :percentage="searchingProgress" />
             <CourseList title="Searching" :unlock="reset_unlock" :btn_disabled="list_search_locked" :list="list_search" @view="onViewSearching" />
             <button class="btn btn-danger btn-sm py-0 py-0 mb-4" @click="resetSearchReadingTime()"><small>Reset reading time</small></button>
           </div>
@@ -39,16 +42,17 @@
 <script lang="ts">
 
   import { defineComponent, toRaw } from 'vue';
-  import { isArticleGroupDone, fetchAllArticlesSearching, fetchAllArticlesSorting, resetReadingTimeByGroup, lsGetUser, printDevLog, fetchSingleArticleByTopic, scrollToTop, createReadLogs, randomNumbers, queryDelete, SystemConnections } from "@/uikit-api";
+  import { isArticleGroupDone, fetchAllArticlesSearching, fetchAllArticlesSorting, resetReadingTimeByGroup, lsGetUser, printDevLog, fetchSingleArticleByTopic, scrollToTop, createReadLogs, randomNumbers, queryDelete, SystemConnections, fetchArticleReadsById, isFundamentalDone } from "@/uikit-api";
   import SectionHeader from "@/components/SectionHeader.vue";
   import SectionFooter from "@/components/SectionFooter.vue";
   import CourseList from "@/components/Courses.vue";
   import SectionArticleHeader from "@/components/SectionArticleHeader.vue";
   import ElemProgressbar from '@/components/ElemProgressbar.vue';
   import Swal from 'sweetalert2';
+  import ProgressBar from '@/components/ProgressBar.vue';
 
   export default defineComponent({
-    components: { SectionArticleHeader, ElemProgressbar, CourseList, SectionFooter, SectionHeader },
+    components: { SectionArticleHeader, ElemProgressbar, CourseList, SectionFooter, SectionHeader, ProgressBar },
     setup() {
       return {
         randomNumbers
@@ -66,6 +70,9 @@
         list_sorting: [] as any,
         list_search: [] as any,
         list_search_locked: true,
+        articleRed: {} as any,
+        sortingProgress: 0,
+        searchingProgress: 0
       }
     },
     methods: {
@@ -124,11 +131,35 @@
         });
       },
       async isArticleGroupDoneLocal() {
+        await this.loadProgress()
         await isArticleGroupDone(this.user?.user_refid, 'SORTING').then( async (check_sorting) => {
           printDevLog("Done Sorting:", toRaw(check_sorting));
           this.list_search_locked = !check_sorting?.success;
           this.reset_unlock       = randomNumbers();
         });
+      },
+      async loadProgress(){
+        await fetchArticleReadsById(this.user?.user_refid).then( async (list) => {
+          this.articleRed = list;
+        });
+
+        let sortingDone = 0
+          this.list_sorting.forEach((item:any) => {
+            if(this.articleRed.some((articleRed:any) => item?.topic_refid == articleRed?.topic_refid)){
+              sortingDone++
+            }
+          })
+
+        this.sortingProgress = Math.floor(sortingDone / this.list_sorting.length * 100)
+
+        let searchingDone = 0
+          this.list_search.forEach((item:any) => {
+            if(this.articleRed.some((articleRed:any) => item?.topic_refid == articleRed?.topic_refid)){
+              searchingDone++
+            }
+          })
+
+        this.searchingProgress = Math.floor(searchingDone / this.list_search.length * 100)
       }
     },
     async mounted() {
@@ -136,6 +167,18 @@
       const user = await lsGetUser() as any;
       if(user?.user_refid) {
         this.user = user;
+
+        await isFundamentalDone(this.user?.user_refid).then( async (response) => {
+          //this.loading.algo = false;
+          if(!response?.success) {
+            this.$router.push("/readings");
+            Swal.fire({
+              title: "Invalid Action",
+              html: response?.message,
+              icon: "info"
+            });
+          }
+        });
       }
       else {
         this.$toast.warning("Login to log reading history.")
@@ -144,6 +187,8 @@
         this.list_sorting = list_sorting;
         await fetchAllArticlesSearching().then( async (list_search) => {
           this.list_search = list_search;
+          await this.loadProgress()
+
           await this.isArticleGroupDoneLocal().then( async () => {
             this.loading  = false;
             printDevLog("Data:", this.$data);

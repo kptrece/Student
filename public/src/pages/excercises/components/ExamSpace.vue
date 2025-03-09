@@ -22,7 +22,7 @@
           </swiper-slide>
         </swiper>
         <div class="d-flex justify-content-start">
-          <button class="btn btn-secondary btn-lg me-4 w-50" @click="()=>{ $emit('back') }">Back</button>
+          <button class="btn btn-secondary btn-lg me-4 w-50" @click= "onBack()">Back</button>
         </div>
       </div>
       <div class="col-sm-0 col-lg-3"></div>
@@ -68,6 +68,26 @@
       }
     },
     methods: {
+      async onBack(){
+        let back = confirm("You will lose all your progress, are you sure you want to leave?")
+        if(back){
+          this.$emit('back')
+        }
+        // Swal.fire({
+        //   title: "Back",
+        //   text: "You will lose all your progress, \n are you sure you want to leave?",
+        //   icon: "warning",
+        //   showCancelButton: true
+        // }).then( async (result) => {
+        //   this.$emit('back')
+
+        //   //this.$emit('back')
+        //   // if(result.isConfirmed){
+        //   //   Swal.close()
+        //   //   this.$emit('back')
+        //   // }
+        // });
+      },
       async onSubmitAnswer(index: number) {
         if(!this.list[index]['answer_input']) {
           this.$toast.warning('Please provide your answer.');

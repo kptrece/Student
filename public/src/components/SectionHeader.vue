@@ -2,7 +2,7 @@
   <header id="header" class="header d-flex align-items-center fixed-top" style="background-color: #161166;">
     <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
       <a href="index.html" class="logo d-flex align-items-center">
-        <h1 class="sitename">AlgoSpear</h1>
+        <router-link to="/"><h1 class="sitename text-white">AlgoSpear</h1></router-link>
       </a>
       <nav id="navmenu" class="navmenu">
         <ul>

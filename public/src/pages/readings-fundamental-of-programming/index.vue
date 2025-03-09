@@ -7,6 +7,7 @@
         <div class="row mt-5">
           <div class="col-4">
             <ElemProgressbar :loading="loading" />
+            <ProgressBar :height="25" :percentage="progress" />
             <CourseList title="Fundamental of Programming" :btn_disabled="false" :list="list" @view="onView" />
             <button class="btn btn-danger btn-sm py-0 py-0" @click="resetFundamentalReadingTime()"><small>Reset reading time</small></button>
           </div>
@@ -37,16 +38,17 @@
 <script lang="ts">
 
   import { defineComponent, toRaw } from 'vue';
-  import { resetReadingTimeByGroup, randomNumbers, lsGetUser, fetchAllArticlesFunOfProg, printDevLog, fetchSingleArticleByTopic, scrollToTop, createReadLogs } from "@/uikit-api";
+  import { resetReadingTimeByGroup, randomNumbers, lsGetUser, fetchAllArticlesFunOfProg, printDevLog, fetchSingleArticleByTopic, scrollToTop, createReadLogs, fetchArticleReadsById } from "@/uikit-api";
   import SectionHeader from "@/components/SectionHeader.vue";
   import SectionFooter from "@/components/SectionFooter.vue";
   import CourseList from "@/components/Courses.vue";
   import ElemProgressbar from '@/components/ElemProgressbar.vue';
   import SectionArticleHeader from "@/components/SectionArticleHeader.vue";
+  import ProgressBar from '@/components/ProgressBar.vue';
   import jlconfig from "@/jlconfig.json";
 
   export default defineComponent({
-    components: { SectionArticleHeader, ElemProgressbar, CourseList, SectionFooter, SectionHeader },
+    components: { SectionArticleHeader, ElemProgressbar, CourseList, SectionFooter, SectionHeader, ProgressBar },
     data() {
       return {
         reset: 0,
@@ -54,7 +56,10 @@
         loading: false,
         user: {} as any,
         list: [] as any,
-        article: {} as any
+        article: {} as any,
+        articles_refid: {} as any,
+        articleRed: {} as any,
+        progress: 0
       }
     },
     methods: {
@@ -80,7 +85,24 @@
         });
       },
       async isArticleGroupDone() {
+        this.loadProgress()
         this.reset_unlock = randomNumbers();
+      },
+      async loadProgress(){
+        await fetchArticleReadsById(this.user?.user_refid).then( async (list) => {
+          this.articleRed = list;
+        });
+
+        let funOfProgDone = 0
+        await fetchAllArticlesFunOfProg().then(async (list) => {
+          list.forEach((item:any) => {
+            if(this.articleRed.some((articleRed:any) => item?.topic_refid == articleRed?.topic_refid)){
+              funOfProgDone++
+            }
+          })
+
+          this.progress = Math.floor(funOfProgDone / list.length * 100)
+        })
       }
     },
     async mounted() {
@@ -88,6 +110,14 @@
       const user = await lsGetUser() as any;
       if(user?.user_refid) {
         this.user = user;
+
+        await fetchArticleReadsById(user?.user_refid).then( async (list) => {
+          this.articleRed = list;
+        });
+
+        this.articles_refid = this.list?.map((article:any) => article?.topic_refid)
+        this.articleRed = this.articleRed?.filter((article:any) => this.articles_refid.includes(article?.topic_refid))
+        this.loadProgress()  
       }
       else {
         this.$toast.warning("Login to log reading history.")
@@ -97,6 +127,8 @@
         this.loading  = false;
         printDevLog("Data:", this.$data);
       });
+
+
     },
   });
 

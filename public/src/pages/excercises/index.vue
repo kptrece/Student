@@ -45,7 +45,7 @@
 <script lang="ts">
 
   import { defineComponent, toRaw } from 'vue';
-  import { lsGetUser, fetchRandomExcercises, printDevLog, queryURL, randomNumbers } from '@/uikit-api';
+  import { lsGetUser, fetchRandomExcercises, printDevLog, queryURL, randomNumbers, isFundamentalDone, isArticleGroupDone, isParentArticleDone } from '@/uikit-api';
   import { Swiper, SwiperSlide } from 'swiper/vue';
   import SectionHeader from "@/components/SectionHeader.vue";
   import SectionFooter from "@/components/SectionFooter.vue";
@@ -75,6 +75,12 @@
           stacks: false,
           queues: false
         },
+        linked_list_locked: false,
+        list_stacks_locked: false,
+        list_queues_locked: false,
+        list_graphs_locked: false,
+        list_arrays_locked: false,
+
         swiper: {} as any,
         excercise: {} as any,
         reset: 0,
@@ -84,11 +90,49 @@
       }
     },
     methods: {
+      async isArticleGroupDoneLocal() {
+        //this.reset_unlock = randomNumbers();
+        await isArticleGroupDone(this.user?.user_refid, 'ARRAYS').then( async (check_array) => {
+          this.list_arrays_locked = !check_array?.success;
+          //console.log(check_array?.success)
+          await isArticleGroupDone(this.user?.user_refid, 'LINKED_LIST').then( async (check_linked_list) => {
+            this.linked_list_locked = !check_linked_list?.success;
+            await isArticleGroupDone(this.user?.user_refid, 'STACKS').then( async (check_stacks) => {
+              this.list_stacks_locked = !check_stacks?.success;
+              await isArticleGroupDone(this.user?.user_refid, 'QUEUES').then( async (check_queues) => {
+                this.list_queues_locked = !check_queues?.success;
+                await isArticleGroupDone(this.user?.user_refid, 'GRAPHS').then( async (check_queues) => {
+                this.list_graphs_locked = !check_queues?.success;
+              });
+              });
+            });
+          });
+        });
+      },
       async initExercises() {
         this.loading      = true;
+
         await queryURL({ url: "util_quiz/initExcercises?user_refid="+ this.user?.user_refid +"&limit=" + jlconfig.excercises_limit }).then( async (excercise) => {
+          
           this.loading    = false;
+          excercise = excercise.map((ex: any) => {
+            let locked : boolean = true;
+            if(ex?.header?.name == "Array"){
+              locked = this.list_arrays_locked
+            }else if(ex?.header?.name == "Linked List"){
+              locked = this.linked_list_locked
+            }else if(ex?.header?.name == "Stacks"){
+              locked = this.list_stacks_locked
+            }else if(ex?.header?.name == "Queues"){
+              locked = this.list_queues_locked
+            }else if(ex?.header?.name == "Graphs"){
+              locked = this.list_graphs_locked
+            }
+
+            return {...ex, locked: locked}
+          });
           this.excercise  = excercise;
+          console.log("exercise, ", this.excercise)
           this.isPassedAll();
         });
       },
@@ -166,9 +210,13 @@
     async mounted() {
       var user = await lsGetUser() as any;
       if(user) { this.user = user; }
+      await this.isArticleGroupDoneLocal().then( async () => {
+        printDevLog("Excercises:", toRaw(this.$data));
+      });
       await this.initExercises().then( async () => {
         printDevLog("Excercises:", toRaw(this.$data));
       });
+
     },
   });
 

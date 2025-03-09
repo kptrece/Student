@@ -24,8 +24,8 @@
             </table>
           </div>
           <div class="card-footer d-flex justify-content-end">
-            <button class="btn btn-secondary w-100" @click="onSelectExam(topic)">
-              <i v-if="topic?.completed" class="bi bi-lock-fill me-1"></i>
+            <button class="btn btn-secondary w-100" @click="locked ? $toast.warning('all exercise must passed') : onSelectExam(topic)">
+              <i v-if="topic?.completed || locked" class="bi bi-lock-fill me-1"></i>
               <i v-else class="bi bi-unlock-fill me-1"></i>
               <span>{{ topic?.attempt > 0 && !topic?.passed ? 'Take again': topic?.attempt > 0 && topic?.passed ? 'Completed':'Start Now' }}</span>
             </button>
@@ -38,6 +38,9 @@
 <script lang="ts">
 
   import { defineComponent, toRaw } from 'vue';
+  import { isAuthenticated } from '@/uikit-api';
+  import Swal from 'sweetalert2';
+
   import jlconfig from "@/jlconfig.json";
 
   export default defineComponent({
@@ -47,6 +50,9 @@
       excercise: {
         default: {},
         type: Object
+      },
+      locked: {
+        default: true
       }
     },
     setup() {
@@ -56,7 +62,17 @@
     },
     methods: {
       onSelectExam(exam: any) {
+      if(isAuthenticated()){
         this.$emit('view', toRaw(exam));
+      }else{
+        Swal.fire({
+              title: "Sign In Required",
+              text: "You need to sign in to start a quiz",
+              icon: "info"
+            }).then( async () => {
+              this.$router.replace('/login');
+            });
+      }
       }
     }
   });

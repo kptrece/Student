@@ -143,12 +143,13 @@
             printDevLog("Data:", toRaw(this.$data));
           }
           else {
+            this.$router.replace('/login');
             Swal.fire({
               title: "Sign In Required",
-              text: "You need to sign in to start an excercises",
+              text: "You need to sign in to start a quiz",
               icon: "info"
             }).then( async () => {
-              this.$router.replace('/login');
+              //this.$router.replace('/login');
             });
           }
         }

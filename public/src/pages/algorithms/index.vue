@@ -5,7 +5,7 @@
       <div class="container mt-5 py-5">
         <div class="row m-5 p-5">
           <div clas="col-12">
-            <h1 class="text-center pb-5">Algorithms VisualizationS</h1>
+            <h1 class="text-center pb-5">Algorithms Visualization</h1>
           </div>
           <div class="col-4 mb-5">
             <div class="card">
@@ -13,8 +13,8 @@
               <div class="card-body">
                 <h5>Sorting Visualization</h5>
                 <p><small>Demonstrate reordering of elements in ascending or descending order.</small></p>
-                <button class="btn btn-primary w-100" :disabled="!views?.QUEUES" @click="()=>{ $router.push('/algorithms-sorting'); }">
-                  <i v-if="!views?.QUEUES" class="bi bi-lock-fill me-1"></i>
+                <button class="btn btn-primary w-100" @click="onClickView('/algorithms-sorting')">
+                  <i v-if="!isUserAuthenticated()" class="bi bi-lock-fill me-1"></i>
                   <i v-else class="bi bi-unlock-fill me-1"></i>
                   <span>View</span>
                 </button>
@@ -27,8 +27,8 @@
               <div class="card-body">
                 <h5>Searching Visualization</h5>
                 <p><small>Illustrate locating an element within a dataset using various algorithms.</small></p>
-                <button class="btn btn-primary w-100" :disabled="!views?.SORTING" @click="()=>{ $router.push('/algorithms-searching'); }">
-                  <i v-if="!views?.SORTING" class="bi bi-lock-fill me-1"></i>
+                <button class="btn btn-primary w-100" @click="onClickView('/algorithms-searching')">
+                  <i v-if="!isUserAuthenticated()" class="bi bi-lock-fill me-1"></i>
                   <i v-else class="bi bi-unlock-fill me-1"></i>
                   <span>View</span>
                 </button>
@@ -44,9 +44,11 @@
 <script lang="ts">
 
   import { defineComponent, toRaw } from 'vue';
-  import { lsGetUser, printDevLog, queryURL } from '@/uikit-api';
+  import { lsGetUser, printDevLog, queryURL, isAuthenticated } from '@/uikit-api';
   import SectionHeader from "@/components/SectionHeader.vue";
   import SectionFooter from "@/components/SectionFooter.vue";
+  import Swal from 'sweetalert2';
+
 
   export default defineComponent({
     name: "AlgorithmsPage",
@@ -58,10 +60,24 @@
       }
     },
     methods: {
+      isUserAuthenticated(){
+        return isAuthenticated()
+      },
       async onFetchViews() {
         await queryURL({ url: "util_quiz/visualViewsChecker?user_refid=" + this.user?.user_refid }).then( async (response) => {
           this.views = response;
         });
+      },
+      onClickView(route: string){
+        if(!isAuthenticated()){
+          Swal.fire({
+              title: "Sign In Required",
+              html: "Please Login first",
+              icon: "info"
+            });
+        }else{
+          this.$router.push(route)
+        }
       }
     },
     async mounted() {

@@ -20,7 +20,7 @@
               <h1 class="text-white">Master Data <span>Structures & Algorithms</span></h1>
               <p class="text-white"><small>Elevate your coding skills and crack technical interviews with our comprehensive Data Structures and Algorithms learning platform. Whether you're a beginner or an advanced programmer, our interactive lessons, hands-on coding challenges, and real-world problem-solving exercises will guide you to success. Start learning today and build the foundation for a successful career in software development.</small></p>
               <div class="d-flex">
-                <router-link class="btn-get-started" to="/" >Read More</router-link>
+                <router-link class="btn-get-started" to="/readings" >Read More</router-link>
               </div>
             </div>
           </div>
@@ -34,7 +34,7 @@
               <h1 class="text-white"><span>Visualize</span> The Concepts</h1>
               <p class="text-white"><small>Understand complex Data Structures and Algorithms through engaging, interactive visualizations. Our platform transforms abstract concepts into intuitive visual experiences, making it easier to grasp foundational principles and optimize problem-solving strategies. Perfect for students, developers, and coding enthusiasts, this visualization-based learning system empowers you to see and solve algorithmic challenges with clarity. Dive in and accelerate your learning journey today!</small></p>
               <div class="d-flex">
-                <router-link class="btn-get-started" to="/" >Read More</router-link>
+                <router-link class="btn-get-started" to="/datastructures" >Read More</router-link>
               </div>
             </div>
           </div>
@@ -48,7 +48,7 @@
               <h1 class="text-white"><span>Learn</span> & <span>Assess</span></h1>
               <p class="text-white"><small>Take your understanding of Data Structures and Algorithms to the next level with our dynamic learning and assessment platform. Combine in-depth tutorials with hands-on coding practice and tailored assessments designed to reinforce key concepts and measure your progress. Whether you're preparing for technical interviews or aiming to sharpen your problem-solving skills, our platform offers personalized learning paths, real-time feedback, and detailed performance insights. Start learning and track your growth every step of the way!</small></p>
               <div class="d-flex">
-                <router-link class="btn-get-started" to="/" >Read More</router-link>
+                <router-link class="btn-get-started" to="/excercises" >Read More</router-link>
               </div>
             </div>
           </div>
