@@ -24,6 +24,7 @@
             </table>
           </div>
           <div class="card-footer d-flex justify-content-end">
+            <!-- <button class="btn btn-secondary w-100" @click="locked ? onSelectExam(topic) : onSelectExam(topic)"> -->
             <button class="btn btn-secondary w-100" @click="locked ? $toast.warning('all exercise must passed') : onSelectExam(topic)">
               <i v-if="topic?.completed || locked" class="bi bi-lock-fill me-1"></i>
               <i v-else class="bi bi-unlock-fill me-1"></i>

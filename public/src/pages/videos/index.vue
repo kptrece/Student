@@ -14,7 +14,7 @@
                 </div>
                 <table class="table table-striped">
                   <tbody>
-                    
+
                     <tr v-for="(v, i) in video?.videos" :key="i">
                       <td><small>{{ v?.title }}</small></td>
                       <td><button class="btn btn-primary btn-sm" @click="onWatchVideo(v)" >Watch</button></td>
